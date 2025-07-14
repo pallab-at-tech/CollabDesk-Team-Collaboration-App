@@ -32,6 +32,6 @@
 
 ## 👨‍💻 Contributor
 
-- [Harshit457](https://github.com/Harshit457)
+- [pallab-at-tech](https://github.com/pallab-at-tech)
 
 
