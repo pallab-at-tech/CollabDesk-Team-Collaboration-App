@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+
+@theme{
+    --breakpoint-lg_md : 900px;
+    --breakpoint-lg-real : 1400px;
+    --breakpoint-mini_tab : 700px;
+}
+
 :root{
     --primary-color : #fafbfc;
 }
