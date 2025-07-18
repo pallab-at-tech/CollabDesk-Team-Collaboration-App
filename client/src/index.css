@@ -2,8 +2,9 @@
 
 
 @theme{
-    --breakpoint-lg_md : 900px;
     --breakpoint-lg-real : 1400px;
+    --breakpoint-ipad_pro : 1020px;
+    --breakpoint-lg_md : 950px;
     --breakpoint-mini_tab : 700px;
 }
 

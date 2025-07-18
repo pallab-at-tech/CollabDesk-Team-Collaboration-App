@@ -1,8 +1,6 @@
 import React from 'react'
-import phone from "../assets/phone.png"
-import person from "../assets/collab-person.png"
-
 import collab_banner from "../assets/collab-banner.png"
+import { Link } from 'react-router-dom'
 
 const Home = () => {
   return (
@@ -19,11 +17,11 @@ const Home = () => {
           <div className='lg-real:mt-[35px] mini_tab:mt-[50px] mt-[40px] flex flex-wrap justify-center items-center lg-real:justify-start mini_tab:justify-center gap-4'>
 
             <input type="email" placeholder='Enter email...' className='w-[310px] bg-white md:py-[9px] py-[5px] rounded px-1.5 outline-[#00061d]' />
-            <button className='block bg-[#005eff] md:py-[9px] py-[5px] px-2 rounded text-white transition-all duration-150 hover:bg-[#0055e8] hover:scale-105 cursor-pointer text-center'>get started</button>
+            <Link to={"/signup"} className='block bg-[#005eff] md:py-[9px] py-[5px] px-2 rounded text-white transition-all duration-150 hover:bg-[#0055e8] hover:scale-105 cursor-pointer text-center'>get started</Link>
 
           </div>
 
-          <div className='pt-3 lg-real:block flex mini_tab:flex-row flex-col justify-center items-center lg-real:justify-start mini_tab:justify-center text-sm leading-[1.2] text-[#000312]'>
+          <div className='pt-3 lg-real:block flex  mini_tab:flex-row flex-col justify-center items-center lg-real:justify-start mini_tab:justify-center text-sm leading-[1.5] text-[#000312]'>
             <p>By entering my email, I acknowledge the</p>
             <span className='underline font-semibold cursor-pointer pl-1 md:inline block'>
               CollabBoard Privacy Policy

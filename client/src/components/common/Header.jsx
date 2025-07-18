@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 
 const Header = () => {
@@ -20,9 +21,9 @@ const Header = () => {
             </div>
 
             <div className='flex items-center justify-center gap-10'>
-                <div className='bg-[#005eff] py-[7px] px-3 rounded text-white transition-all duration-150 hover:bg-[#0055e8] hover:scale-105 cursor-pointer text-center'>
+                <Link to={"/login"} className='bg-[#005eff] py-[7px] px-3 rounded text-white transition-all duration-150 hover:bg-[#0055e8] hover:scale-105 cursor-pointer text-center'>
                     sign in
-                </div>
+                </Link>
             </div>
 
         </header>
