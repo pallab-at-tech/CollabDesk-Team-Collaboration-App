@@ -7,6 +7,8 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import { app, server } from './config/connectSocket.js'
+import connectDB from './config/connectDB.js'
+import userRoute from './routes/user.route.js'
 
 
 
@@ -29,8 +31,15 @@ app.get("/", (req, res) => {
     })
 })
 
+// other api
+app.use("/api/user",userRoute)
+
 const PORT = 8080 || process.env.PORT
 
-server.listen(PORT, () => {
-    console.log(`Server starting at http://localhost:${PORT}`)
+connectDB().then(() => {
+
+    server.listen(PORT, () => {
+        console.log(`Server starting at http://localhost:${PORT}`)
+    })
+
 })
