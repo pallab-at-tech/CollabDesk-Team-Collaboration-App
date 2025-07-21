@@ -1,6 +1,13 @@
 import React, { useState } from 'react'
 import sign_in from "../assets/sin1.png"
-import { Link } from 'react-router-dom'
+import { Link , useNavigate } from 'react-router-dom'
+import Axios from "../utils/Axios"
+import SummaryApi from '../common/SummaryApi'
+import toast from 'react-hot-toast'
+import {useDispatch , useSelector } from 'react-redux'
+import { setUserDetails } from '../store/userSlice'
+import fetchUserDetails from '../utils/fetchUserDetails'
+
 
 
 const SigninPage = () => {
@@ -9,6 +16,14 @@ const SigninPage = () => {
         email: "",
         password: ""
     })
+    const navigate = useNavigate()
+
+    const [pointerNone, setPointerNone] = useState(false)
+    const dispatch = useDispatch()
+
+    const user = useSelector(state => state.user)
+
+    console.log("user redux",user)
 
 
     const handleChange = (e) => {
@@ -23,6 +38,58 @@ const SigninPage = () => {
         })
     }
 
+    const handleOnSubmit = async (e) => {
+        e.preventDefault()
+
+        try {
+
+            setPointerNone(true)
+
+            const response = await Axios({
+                ...SummaryApi.login,
+                data: data
+            })
+
+
+            if (response?.data?.error) {
+                toast.error(response?.data?.message)
+            }
+
+
+            if (response?.data?.success) {
+                toast.success(response?.data?.message)
+                localStorage.setItem('accesstoken', response.data.data.accessToken)
+                localStorage.setItem('refreshToken', response.data.data.refreshToken)
+
+
+                const userDetails = await fetchUserDetails()
+                dispatch(setUserDetails(userDetails?.data))
+
+
+                setData({
+                    email: "",
+                    password: ""
+                })
+
+                navigate("/")
+            }
+
+        } catch (error) {
+
+            if(error?.response?.data?.message === "please provide email and password"){
+                toast.error("please provide email and password")
+            }
+            else if(error?.response?.data?.message === "provide email not registered"){
+                toast.error("provide email not registered")
+            }
+            else if("please enter right password"){
+                toast.error("wrong password")
+            }
+        } finally {
+            setPointerNone(false)
+        }
+    }
+
     return (
         <section className='bg-[#00001f] relative min-h-screen min-w-screen max-w-screen max-h-screen lg-real:px-[7%] lg-real:py-[6%]  grid lg-real:grid-cols-2 gap-0'>
 
@@ -33,7 +100,7 @@ const SigninPage = () => {
 
             <div className='w-full h-full bg-[#9fb1f3] lg-real:rounded-r-2xl lg-real:rounded-l-none  relative z-50'>
 
-                <form className='flex flex-col items-center justify-center h-full w-full gap-1'>
+                <form onSubmit={handleOnSubmit} className='flex flex-col items-center justify-center h-full w-full gap-1'>
                     <h1 className='lg-real:text-3xl lg_md:text-4xl  mini_tab:text-3xl text-2xl font-bold text-[#000727] my-2'>Welcome Your Account</h1>
 
                     <div className='group text-lg'>
@@ -47,8 +114,8 @@ const SigninPage = () => {
                     </div>
 
                     <div className='flex flex-col gap-1'>
-                        <button  className={`p-2  lg-real:w-[320px] mini_tab:w-[320px] lg_md:w-[390px] w-[250px]  bg-[#1c45a4] text-[#d1cece]  lg-real:mt-2 lg_md:mt-3 mini_tab:mt-2 mt-2  rounded  font-semibold cursor-pointer`}>Login</button>
-                        <Link  className='text-[#1c45a4] text-sm pr-6 font-semibold'>Forgot Password ?</Link>
+                        <button className={`p-2  lg-real:w-[320px] mini_tab:w-[320px] lg_md:w-[390px] w-[250px]  bg-[#1c45a4] text-[#dce0f1]  lg-real:mt-2 lg_md:mt-3 mini_tab:mt-2 mt-2  rounded  font-semibold ${pointerNone ? "pointer-events-none" : "cursor-pointer"}`}>Login</button>
+                        <Link className='text-[#1c45a4] text-sm pr-6 font-semibold'>Forgot Password ?</Link>
 
                         <div className='flex text-sm gap-1'>
                             <p className='text-[#1c45a4] font-semibold'>Don't have account ?</p>

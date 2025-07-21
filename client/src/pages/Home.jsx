@@ -32,7 +32,6 @@ const Home = () => {
 
         {/* for window version */}
         <div className='lg-real:block hidden'>
-          {/* banner img */}
 
           <div className='absolute top-[50px] right-0'>
 

@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import sign_in from "../assets/sin1.png"
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import Axios from '../utils/Axios'
+import SummaryApi from '../common/SummaryApi'
 
 
 const SignupPage = () => {
@@ -11,6 +14,9 @@ const SignupPage = () => {
     password: "",
     confirmPassword: ""
   })
+
+  const navigate = useNavigate()
+  const [pointerNone, setPointerNone] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -24,6 +30,51 @@ const SignupPage = () => {
     })
   }
 
+  const handleOnSubmit = async (e) => {
+    e.preventDefault()
+
+    if (data.password !== data.confirmPassword) {
+      toast.error("Password and confirm password must be same")
+      return
+    }
+
+    try {
+
+      setPointerNone(true)
+
+      const response = await Axios({
+        ...SummaryApi.register,
+        data: data
+      })
+
+      if (response.data?.error) {
+        toast.error(response?.data?.message)
+      }
+
+      if (response.data?.success) {
+        toast.success(response?.data?.message)
+        setData({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: ""
+        })
+        navigate("/login")
+      }
+
+    } catch (error) {
+      if (error?.response?.data?.message === "user already registered with your provided email") {
+        toast.error("user already registered with your provided email")
+      }
+      else if(error?.response?.data?.message === "please provide name , email and password"){
+        toast.error("please provide name , email and password")
+      }
+
+    } finally {
+      setPointerNone(false)
+    }
+  }
+
   return (
     <section className='bg-[#00001f] relative min-h-screen min-w-screen max-w-screen max-h-screen lg-real:px-[7%] lg-real:py-[6%] grid lg-real:grid-cols-2 gap-0'>
 
@@ -33,7 +84,7 @@ const SignupPage = () => {
 
       <div className='w-full h-full bg-[#9fb1f3] lg-real:rounded-r-2xl lg-real:rounded-l-none  relative z-50'>
 
-        <form className='flex flex-col items-center justify-center h-full w-full gap-1'>
+        <form onSubmit={handleOnSubmit} className='flex flex-col items-center justify-center h-full w-full gap-1'>
 
           <h1 className='lg-real:text-3xl lg_md:text-4xl  mini_tab:text-3xl text-2xl font-bold text-[#000727] my-2'>Welcome</h1>
 
@@ -58,7 +109,7 @@ const SignupPage = () => {
           </div>
 
           <div className='flex flex-col gap-1'>
-            <button className={`p-2  lg-real:w-[320px] mini_tab:w-[320px] lg_md:w-[390px] w-[250px] bg-[#1c45a4] text-[#d1cece]  lg-real:mt-2 lg_md:mt-3 mini_tab:mt-2 mt-2 rounded  font-semibold cursor-pointer`}>sign up</button>
+            <button className={`p-2  lg-real:w-[320px] mini_tab:w-[320px] lg_md:w-[390px] w-[250px] bg-[#1c45a4] text-[#d1cece]  lg-real:mt-2 lg_md:mt-3 mini_tab:mt-2 mt-2 rounded  font-semibold ${pointerNone ? "pointer-events-none" : "cursor-pointer"}`}>sign up</button>
 
             <div className='flex text-sm gap-1'>
               <p className='text-[#1c45a4] font-semibold'>Already have account ?</p>
