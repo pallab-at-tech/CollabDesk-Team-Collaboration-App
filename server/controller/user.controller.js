@@ -1,10 +1,13 @@
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
+
 import userModel from "../model/user.model.js"
 import generatedAccessToken from '../utils/generateAccessToken.js'
 import generateRefreshToken from '../utils/generateRefreshToken.js'
 import generateOTP from '../utils/generateOTP.js'
+import sendEmail from '../utils/sendEmail.js'
+import verifyEmailTemplate from '../utils/verifyEmailTemplate.js'
 
 
 export const userRegisterController = async (request, response) => {
@@ -24,7 +27,7 @@ export const userRegisterController = async (request, response) => {
 
         if (user) {
             return response.status(400).json({
-                message: `user already registered with ${email}`,
+                message: `user already registered with your provided email`,
                 error: true,
                 success: false
             })
@@ -45,15 +48,14 @@ export const userRegisterController = async (request, response) => {
         const save = await newUser.save()
 
 
-
-        // const verify_email = await sendEmail({
-        //     sendTO: email,
-        //     subject: 'email verfication from Quizzy buddy',
-        //     html: verifyEmailTemplate({
-        //         name,
-        //         code: num
-        //     })
-        // })
+        const verify_email = await sendEmail({
+            sendTO: email,
+            subject: 'email verfication from collabBoard',
+            html: verifyEmailTemplate({
+                name,
+                code: num
+            })
+        })
 
         return response.json({
             message: 'user register successfully',
