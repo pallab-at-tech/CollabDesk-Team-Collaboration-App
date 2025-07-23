@@ -62,6 +62,9 @@ const SigninPage = () => {
                 localStorage.setItem('refreshToken', response.data.data.refreshToken)
 
 
+                localStorage.setItem('login',"true")
+
+
                 const userDetails = await fetchUserDetails()
                 dispatch(setUserDetails(userDetails?.data))
 
