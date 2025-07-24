@@ -9,6 +9,7 @@ dotenv.config()
 import { app, server } from './config/connectSocket.js'
 import connectDB from './config/connectDB.js'
 import userRoute from './routes/user.route.js'
+import teamRouter from './routes/team.route.js'
 
 
 
@@ -33,6 +34,7 @@ app.get("/", (req, res) => {
 
 // other api
 app.use("/api/user",userRoute)
+app.use("/api/teaming",teamRouter)
 
 const PORT = 8080 || process.env.PORT
 

@@ -1,5 +1,7 @@
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { customAlphabet } from 'nanoid'
+const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 4)
 
 
 import userModel from "../model/user.model.js"
@@ -14,6 +16,7 @@ export const userRegisterController = async (request, response) => {
     try {
 
         const { name, email, password } = request.body || {}
+        const uniqueId = nanoid()
 
         if (!name || !email || !password) {
             return response.status(400).json({
@@ -41,7 +44,8 @@ export const userRegisterController = async (request, response) => {
             name,
             email,
             password: hashPassword,
-            verify_code: num
+            verify_code: num,
+            userId: uniqueId
         }
 
         const newUser = new userModel(payload)

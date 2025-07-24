@@ -7,8 +7,8 @@ const memberSchema = new mongoose.Schema({
     },
     role : {
         type : String,
-        enum : ["ADMIN" , "MEMBER"],
-        required : true
+        enum : ["LEADER","CO-LEADER","MEMBER"],
+        default : "MEMBER"
     }
 })
 

@@ -8,8 +8,8 @@ const RoleSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ["ADMIN", "MEMBER"],
-        required: true
+        enum: ["LEADER","CO-LEADER","MEMBER"],
+        default : "MEMBER"
     }
 })
 
@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "provided password"]
+    },
+    userId : {
+        type: String,
+        default : ""
     },
     roles: [
         RoleSchema
