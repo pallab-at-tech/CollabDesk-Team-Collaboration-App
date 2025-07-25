@@ -4,17 +4,22 @@ import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { MdOutlinePostAdd } from "react-icons/md";
 import { MdFullscreen } from "react-icons/md";
 import { RiEmojiStickerLine } from "react-icons/ri";
+import CreateTeam from '../components/other/CreateTeam';
+import { useState } from 'react';
 
 const RealHome = () => {
+
+    const [openCreateTeam, setOpenCreateTeam] = useState(false)
+
     return (
-        <section className='bg-A-color min-h-[calc(100vh-60px)] grid grid-cols-2 place-items-center'>
+        <section className='bg-[#fff] min-h-[calc(100vh-60px)] grid lg-real:grid-cols-2 place-items-center'>
 
             <div className='flex flex-col gap-2 text-A-off-color text-3xl font-semibold'>
 
-                <Link className='flex gap-1 items-center bg-B-color rounded w-[250px] px-3 py-4 hover:bg-[#93c89b] transition-colors duration-150'>
+                <div onClick={()=>setOpenCreateTeam(true)} className='flex gap-1 items-center bg-B-color rounded w-[250px] px-3 py-4 hover:bg-[#93c89b] transition-colors duration-150 cursor-pointer'>
                     <div className=' w-full block px-2 py-1'>create team</div>
                     <MdOutlineCreateNewFolder size={38} />
-                </Link>
+                </div>
 
                 <Link className='flex gap-1 items-center bg-B-color rounded w-[250px] px-3 py-4 hover:bg-[#93c89b] transition-colors duration-150'>
                     <div className=' w-full block px-2 py-1'>join team</div>
@@ -29,7 +34,7 @@ const RealHome = () => {
             </div>
 
 
-            <div className='bg-B-color text-A-off-color text-lg font-semibold w-full h-full shadow-[-5px_-6px_10px_0px_rgba(143,212,139,0.2)]'>
+            <div className='bg-B-color text-A-off-color text-lg font-semibold w-full h-full shadow-[-5px_-6px_10px_0px_rgba(143,212,139,0.2)] lg-real:block hidden'>
 
                 <div className='float-right p-4 cursor-pointer' title='full screen'>
                     <MdFullscreen size={28}/>
@@ -44,6 +49,13 @@ const RealHome = () => {
                 </div>
                 
             </div>
+
+
+            {
+                openCreateTeam && (
+                    <CreateTeam close={()=>setOpenCreateTeam(false)}/>
+                )
+            }
 
 
         </section>

@@ -16,6 +16,10 @@ const SummaryApi = {
     user_deatails : {
         url : "/api/user/user-details",
         method : "get"
+    },
+    team_create : {
+        url : "/api/teaming/team-create",
+        method : "post"
     }
 }
 

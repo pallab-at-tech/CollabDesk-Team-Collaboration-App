@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useGlobalContext } from "../../provider/GlobalProvider"
 import { IoIosNotifications } from "react-icons/io";
+import { useSelector } from 'react-redux';
 
+
+
+
+// const url = ""
 
 
 const Header = () => {
@@ -11,11 +16,20 @@ const Header = () => {
 
     const [isLogin, setIsLogin] = useState(null)
 
+    const user = useSelector(state => state.user)
+
+    console.log("from header",user)
+
+    const boardURL = `/board/${user?.name}-${user?._id}`
+    console.log("boardURL",boardURL)
+
     useEffect(() => {
         setIsLogin(fetchIsLogin())
     }, [fetchIsLogin])
 
     if (isLogin === null) return null
+
+    
 
     return (
         <header className={`${isLogin ? "bg-A-off-color" : "bg-[var(--primary-color)]"} min-h-[60px] grid grid-cols-[1fr_2fr_2fr] items-center relative z-50`}>
@@ -40,12 +54,12 @@ const Header = () => {
                     isLogin ? (
                         <>
                             <div className='text-A-off-text font-semibold cursor-pointer'>
-                                <IoIosNotifications size={24}/>
+                                <IoIosNotifications size={24} />
                             </div>
 
-                            <div className='text-A-off-text font-semibold'>
+                            <Link to={boardURL} className='text-A-off-text font-semibold'>
                                 Board
-                            </div>
+                            </Link>
                         </>
                     ) : (
                         <Link to={"/login"} className='bg-[#005eff] py-[7px] px-3 rounded text-white transition-all duration-150 hover:bg-[#0055e8] hover:scale-105 cursor-pointer text-center'>
