@@ -23,9 +23,11 @@ const CollabBoard = () => {
   console.log("data....",bannerCombo['Engineering-IT'])
   console.log("user from collabBoard", user)
 
+
   return (
     <section className='bg-[#fff] min-h-[calc(100vh-60px)] px-[50px] py-4 grid grid-cols-[1fr_500px]'>
-      <div>
+
+      <div className='h-[calc(100vh-180px)]  overflow-y-auto'>
         hi
       </div>
 
