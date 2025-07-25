@@ -5,7 +5,7 @@ export const teamCreateController = async (request, response) => {
     try {
         const userId = request.userId
 
-        const { name, role = "LEADER" } = request.body || {}
+        const { name, role = "LEADER", description, organization_type } = request.body || {}
 
         if (!name) {
             return response.status(400).json({
@@ -15,8 +15,18 @@ export const teamCreateController = async (request, response) => {
             })
         }
 
+        if (!organization_type) {
+            return response.status(400).json({
+                message: "Please provide organization type",
+                error: true,
+                success: false
+            })
+        }
+
         const payload = {
             name,
+            description,
+            organization_type,
             member: [
                 {
                     userId,
@@ -36,7 +46,9 @@ export const teamCreateController = async (request, response) => {
                 $push: {
                     roles: {
                         teamId: save._id,
-                        role: role
+                        role: role,
+                        name : name,
+                        organization_type : organization_type
                     }
                 }
             }
@@ -61,87 +73,87 @@ export const addTeamMemberByLeaderController = async (request, response) => {
     try {
 
         const leaderId = request.userId
-        const {userIdArray=[] , teamId , role = "MEMBER"} = request.body || {}
+        const { userIdArray = [], teamId, role = "MEMBER" } = request.body || {}
 
 
-        if(!teamId){
+        if (!teamId) {
             return response.status(400).json({
-                message : 'team Id required',
-                error : true,
-                success : false
+                message: 'team Id required',
+                error: true,
+                success: false
             })
         }
-        
-        if(!Array.isArray(userIdArray) ||  userIdArray.length === 0){
+
+        if (!Array.isArray(userIdArray) || userIdArray.length === 0) {
             return response.status(400).json({
-                message : 'provide userId',
-                error : true,
-                success : false
+                message: 'provide userId',
+                error: true,
+                success: false
             })
         }
 
         const team = await teamModel.findById(teamId)
 
-        if(!team){
+        if (!team) {
             return response.status(400).json({
-                message : 'Team is not exist',
-                error : true,
-                success : false
+                message: 'Team is not exist',
+                error: true,
+                success: false
             })
         }
 
-        console.log("team",team)
-        console.log("team member",team.member)
+        console.log("team", team)
+        console.log("team member", team.member)
 
         const isTeamLeader = team.member.some((m) => m.userId.toString() === leaderId.toString() && m.role !== "MEMBER")
-        console.log("leader id",leaderId)
-        console.log("isTeamLeader",isTeamLeader)
+        console.log("leader id", leaderId)
+        console.log("isTeamLeader", isTeamLeader)
 
-        if(!isTeamLeader){
+        if (!isTeamLeader) {
             return response.status(400).json({
-                message : "you haven't the access to add member",
-                error : true,
-                success : false
+                message: "you haven't the access to add member",
+                error: true,
+                success: false
             })
         }
 
-        console.log("all user array",userIdArray)
+        console.log("all user array", userIdArray)
 
-        const existingIds = team.member.map( (m) => m.userId.toString())
+        const existingIds = team.member.map((m) => m.userId.toString())
 
-        console.log("existingIds",existingIds)
+        console.log("existingIds", existingIds)
 
         const newMember = userIdArray.filter(
             (userId) => userId && !existingIds.includes(userId.toString())
         )
 
-        console.log("new momeber",newMember)
+        console.log("new momeber", newMember)
 
-        if(newMember.length === 0){
+        if (newMember.length === 0) {
             return response.status(400).json({
-                message : "users already exist in team",
-                error : true,
-                success : false
+                message: "users already exist in team",
+                error: true,
+                success: false
             })
         }
 
         newMember.forEach(
-            (m) =>{
-                team.member.push({userId : m , role : role})
+            (m) => {
+                team.member.push({ userId: m, role: role })
             }
         )
 
         await team.save()
 
         const updatePromises = newMember.map(
-            (userId) =>{
+            (userId) => {
                 return userModel.findByIdAndUpdate(
                     userId,
                     {
-                        $push : {
-                            roles : {
+                        $push: {
+                            roles: {
                                 teamId,
-                                role:role
+                                role: role
                             }
                         }
                     }
@@ -152,9 +164,9 @@ export const addTeamMemberByLeaderController = async (request, response) => {
         await Promise.all(updatePromises)
 
         return response.json({
-            message : "members added in team",
-            error : false,
-            success : true
+            message: "members added in team",
+            error: false,
+            success: true
         })
 
     } catch (error) {

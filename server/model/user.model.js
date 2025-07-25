@@ -6,10 +6,18 @@ const RoleSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "team"
     },
+    name: {
+        type: String,
+        required: [true, "provide team-name"]
+    },
+    organization_type: {
+        type: String,
+        required: [true, "Provide organization type"]
+    },
     role: {
         type: String,
-        enum: ["LEADER","CO-LEADER","MEMBER"],
-        default : "MEMBER"
+        enum: ["LEADER", "CO-LEADER", "MEMBER"],
+        default: "MEMBER"
     }
 })
 
@@ -27,9 +35,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "provided password"]
     },
-    userId : {
+    userId: {
         type: String,
-        default : ""
+        default: ""
     },
     roles: [
         RoleSchema
@@ -38,9 +46,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
-    verify_code : {
-        type : String,
-        default : ""
+    verify_code: {
+        type: String,
+        default: ""
     },
     verify_email: {
         type: Boolean,

@@ -17,6 +17,14 @@ const teamSchema  = new mongoose.Schema({
         type :String,
         required : [true , "provide team-name"]
     },
+    description : {
+        type : String,
+        default : ""
+    },
+    organization_type : {
+        type : String,
+        required : [true , "Provide organization type"]
+    },
     member : [
         memberSchema
     ]
