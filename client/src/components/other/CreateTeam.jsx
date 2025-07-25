@@ -5,6 +5,9 @@ import { useState } from 'react';
 import toast from 'react-hot-toast'
 import Axios from '../../utils/Axios';
 import SummaryApi from '../../common/SummaryApi';
+import { useDispatch } from 'react-redux';
+import { setUserDetails } from '../../store/userSlice';
+import fetchUserDetails from '../../utils/fetchUserDetails';
 
 const CreateTeam = ({ close }) => {
 
@@ -14,11 +17,11 @@ const CreateTeam = ({ close }) => {
         organization_type: ""
     })
     const [activeButton, setactiveButton] = useState(true)
+    const dispatch = useDispatch()
 
     const allOrganizationTypes = [
-        "Engineering-IT", "Student", "Healthcare-Dept", "Government employee", "Manufacturing-Dept","other"
+        "Engineering-IT", "Student", "Healthcare-Dept", "Government employee", "Manufacturing-Dept", "other"
     ]
-
 
     const handleOnChange = (e) => {
 
@@ -54,6 +57,9 @@ const CreateTeam = ({ close }) => {
                     description: "",
                     organization_type: ""
                 })
+
+                const userDetails = await fetchUserDetails()
+                dispatch(setUserDetails(userDetails?.data))
                 close()
             }
 
@@ -108,8 +114,8 @@ const CreateTeam = ({ close }) => {
                                 <option value="select one" disabled selected>select one</option>
 
                                 {
-                                    allOrganizationTypes.map((v , i)=>{
-                                        return(
+                                    allOrganizationTypes.map((v, i) => {
+                                        return (
                                             <option key={`Organization-${v}-${i}`} value={`${v}`}>{v}</option>
                                         )
                                     })
