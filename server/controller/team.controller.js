@@ -47,8 +47,8 @@ export const teamCreateController = async (request, response) => {
                     roles: {
                         teamId: save._id,
                         role: role,
-                        name : name,
-                        organization_type : organization_type
+                        name: name,
+                        organization_type: organization_type
                     }
                 }
             }
@@ -102,13 +102,8 @@ export const addTeamMemberByLeaderController = async (request, response) => {
             })
         }
 
-        console.log("team", team)
-        console.log("team member", team.member)
-
         const isTeamLeader = team.member.some((m) => m.userId.toString() === leaderId.toString() && m.role !== "MEMBER")
-        console.log("leader id", leaderId)
-        console.log("isTeamLeader", isTeamLeader)
-
+     
         if (!isTeamLeader) {
             return response.status(400).json({
                 message: "you haven't the access to add member",
@@ -117,17 +112,12 @@ export const addTeamMemberByLeaderController = async (request, response) => {
             })
         }
 
-        console.log("all user array", userIdArray)
-
         const existingIds = team.member.map((m) => m.userId.toString())
-
-        console.log("existingIds", existingIds)
 
         const newMember = userIdArray.filter(
             (userId) => userId && !existingIds.includes(userId.toString())
         )
 
-        console.log("new momeber", newMember)
 
         if (newMember.length === 0) {
             return response.status(400).json({
@@ -167,6 +157,39 @@ export const addTeamMemberByLeaderController = async (request, response) => {
             message: "members added in team",
             error: false,
             success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+export const getTeamDetailsController = async (request, response) => {
+    try {
+
+        const {teamId} = request.query || {}
+
+        console.log("teamId",teamId)
+
+        if(!teamId){
+            return response.status(400).json({
+                message : 'Team Id required',
+                error : true,
+                success : false
+            })
+        }
+
+        const teamDetails = await teamModel.findById(teamId)
+
+        return response.json({
+            message : 'Got team details',
+            data : teamDetails,
+            error : false,
+            success : true
         })
 
     } catch (error) {
