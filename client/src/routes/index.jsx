@@ -4,6 +4,7 @@ import Home from '../pages/Home'
 import SigninPage from '../pages/SigninPage'
 import SignupPage from '../pages/SignupPage'
 import CollabBoard from '../pages/collabBoard'
+import TeamBoard from '../components/other/TeamBoard'
 
 const router = createBrowserRouter([
     {
@@ -17,7 +18,13 @@ const router = createBrowserRouter([
             },
             {
                 path : '/board/:user',
-                element : <CollabBoard/>
+                element : <CollabBoard/>,
+                children : [
+                    {
+                        path :'/board/:user/:team',
+                        element : <TeamBoard/>
+                    }
+                ]
             }
         ]
     },

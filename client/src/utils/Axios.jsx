@@ -31,7 +31,7 @@ Axios.interceptors.response.use(
     }, async (error) => {
         let originalRequest = error.config
 
-        if (error.response.status === 401 && !originalRequest.retry) {
+        if (error?.response?.status === 401 && !originalRequest?.retry) {
 
             originalRequest.retry = true
 

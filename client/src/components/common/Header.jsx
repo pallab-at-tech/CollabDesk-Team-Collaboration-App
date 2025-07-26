@@ -6,10 +6,6 @@ import { useSelector } from 'react-redux';
 
 
 
-
-// const url = ""
-
-
 const Header = () => {
 
     const { fetchIsLogin } = useGlobalContext()
@@ -18,10 +14,7 @@ const Header = () => {
 
     const user = useSelector(state => state.user)
 
-    console.log("from header",user)
-
-    const boardURL = `/board/${user?.name}-${user?._id}`
-    console.log("boardURL",boardURL)
+    const boardURL = `/board/${user?.name}-${user?._id}/${user?.roles[0]?.teamId}`
 
     useEffect(() => {
         setIsLogin(fetchIsLogin())

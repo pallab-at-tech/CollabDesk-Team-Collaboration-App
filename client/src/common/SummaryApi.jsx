@@ -20,6 +20,10 @@ const SummaryApi = {
     team_create : {
         url : "/api/teaming/team-create",
         method : "post"
+    },
+    team_details : {
+        url : "/api/teaming/team-details",
+        method : "get"
     }
 }
 

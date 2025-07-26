@@ -1,11 +1,10 @@
-import React from 'react'
+import React , { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { MdOutlinePostAdd } from "react-icons/md";
 import { MdFullscreen } from "react-icons/md";
 import { RiEmojiStickerLine } from "react-icons/ri";
 import CreateTeam from '../components/other/CreateTeam';
-import { useState } from 'react';
 
 const RealHome = () => {
 
@@ -16,12 +15,12 @@ const RealHome = () => {
 
             <div className='flex flex-col gap-2 text-A-off-color text-3xl font-semibold'>
 
-                <div onClick={()=>setOpenCreateTeam(true)} className='flex gap-1 items-center bg-B-color rounded w-[250px] px-3 py-4 hover:bg-[#93c89b] transition-colors duration-150 cursor-pointer'>
+                <div onClick={()=>setOpenCreateTeam(true)} className='flex gap-1 items-center bg-[#78bd83] rounded w-[250px] px-3 py-4 hover:bg-[#8bc292] transition-colors duration-150 cursor-pointer'>
                     <div className=' w-full block px-2 py-1'>create team</div>
                     <MdOutlineCreateNewFolder size={38} />
                 </div>
 
-                <Link className='flex gap-1 items-center bg-B-color rounded w-[250px] px-3 py-4 hover:bg-[#93c89b] transition-colors duration-150'>
+                <Link className='flex gap-1 items-center bg-[#78bd83] rounded w-[250px] px-3 py-4 hover:bg-[#8bc292] transition-colors duration-150'>
                     <div className=' w-full block px-2 py-1'>join team</div>
                     <MdOutlinePostAdd size={38} />
                 </Link>

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Axios from '../utils/Axios'
 import SummaryApi from '../common/SummaryApi'
 import { setUserDetails } from '../store/userSlice'
+import { setTeamDetails } from '../store/teamSlice'
 
 export const GlobalContext = createContext(null)
 export const useGlobalContext = () => useContext(GlobalContext)
@@ -29,8 +30,6 @@ const GlobalProvider = ({ children }) => {
                 localStorage.setItem('login', 'false');
             }
 
-            console.log("testing response", responseData)
-
         } catch (error) {
             localStorage.setItem('login', 'false');
             console.log("error from global provider", error)
@@ -42,6 +41,27 @@ const GlobalProvider = ({ children }) => {
         return login === "true"
     }
 
+    const fetchTeamDetails = async(teamId) =>{
+
+        try {
+            const response = await Axios({
+                ...SummaryApi.team_details,
+                params : {
+                    teamId,
+                }
+            })
+
+            const { data : responseData} = response
+
+            if(responseData?.success){
+                dispatch(setTeamDetails(responseData?.data))
+            }
+
+        } catch (error) {
+            console.log("error for fetchTeamDetails",error)
+        }
+    }
+
     useEffect(() => {
         fetchUserAllDetails();
         fetchIsLogin()
@@ -51,7 +71,7 @@ const GlobalProvider = ({ children }) => {
 
 
     return (
-        <GlobalContext.Provider value={{ fetchUserAllDetails, fetchIsLogin }}>
+        <GlobalContext.Provider value={{ fetchUserAllDetails, fetchIsLogin , fetchTeamDetails }}>
             {
                 children
             }
