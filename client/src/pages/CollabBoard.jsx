@@ -8,6 +8,7 @@ import manufacture from "../assets/manufacture-banner.png"
 import other from "../assets/other-banner.png"
 import { Outlet } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import { VscTriangleRight } from "react-icons/vsc";
 
 const CollabBoard = () => {
 
@@ -26,15 +27,19 @@ const CollabBoard = () => {
 
 
   return (
-    <section className='bg-[#fcfcfc] min-h-[calc(100vh-60px)] px-[50px] py-4 grid grid-cols-[1fr_500px]'>
+    <section className='bg-[#fcfcfc] min-h-[calc(100vh-60px)] lg-real:px-[50px] px-6 py-4 grid lg-real:grid-cols-[1fr_500px]'>
 
-      <div className='h-[calc(100vh-112px)] overflow-y-hidden' style={{ willChange: 'transform' }}>
+      <div className='h-[calc(100vh-112px)] overflow-y-hidden'>
         {
           <Outlet />
         }
       </div>
 
-      <div className='pl-4 scroll-smooth'>
+      <div className='pl-4 scroll-smooth relative lg-real:block hidden'>
+
+        <div className='absolute top-4 left-2 cursor-pointer w-fit' title='close slide'>
+          <VscTriangleRight size={28}/>
+        </div>
 
         <h1 className='text-center font-bold py-4 text-3xl text-[#024f13]'>All TEAM</h1>
 

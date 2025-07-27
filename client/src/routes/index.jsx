@@ -5,36 +5,54 @@ import SigninPage from '../pages/SigninPage'
 import SignupPage from '../pages/SignupPage'
 import CollabBoard from '../pages/collabBoard'
 import TeamBoard from '../components/other/TeamBoard'
+import MainTeamBoard from '../components/other/MainTeamBoard'
+import TeamBoardEdit from '../components/other/TeamBoardEdit'
+import MobileForCollabBoard from '../pages/MobileForCollabBoard'
 
 const router = createBrowserRouter([
     {
-        path : "/",
-        element : <App/>,
+        path: "/",
+        element: <App />,
 
-        children : [
+        children: [
             {
-                path : '',
-                element : <Home/>
+                path: '',
+                element: <Home />
             },
             {
-                path : '/board/:user',
-                element : <CollabBoard/>,
-                children : [
+                path: '/board/:user',
+                element: <CollabBoard />,
+                children: [
                     {
-                        path :'/board/:user/:team',
-                        element : <TeamBoard/>
-                    }
+                        path : '',
+                        element : <MobileForCollabBoard/>
+                    },
+                    {
+                        path: ':team',
+                        element: <TeamBoard />,
+                        children: [
+                            {
+                                path: '',
+                                element: <MainTeamBoard />
+                            },
+                            {
+                                path : 'edit',
+                                element : <TeamBoardEdit/>
+                            }
+                        ]
+                    },
                 ]
+                
             }
         ]
     },
     {
-        path : "/login",
-        element : <SigninPage/>
+        path: "/login",
+        element: <SigninPage />
     },
     {
-        path : "/signup",
-        element : <SignupPage/>
+        path: "/signup",
+        element: <SignupPage />
     }
 ])
 

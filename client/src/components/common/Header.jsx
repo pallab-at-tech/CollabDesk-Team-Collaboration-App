@@ -15,6 +15,9 @@ const Header = () => {
     const user = useSelector(state => state.user)
 
     const boardURL = `/board/${user?.name}-${user?._id}/${user?.roles[0]?.teamId}`
+    const mobileBoardURL = `/board/${user?.name}-${user?._id}`
+
+    console.log("mobileBoardURL",mobileBoardURL)
 
     useEffect(() => {
         setIsLogin(fetchIsLogin())
@@ -22,14 +25,14 @@ const Header = () => {
 
     if (isLogin === null) return null
 
-    
+
 
     return (
         <header className={`${isLogin ? "bg-A-off-color" : "bg-[var(--primary-color)]"} min-h-[60px] grid grid-cols-[1fr_2fr_2fr] items-center relative z-50`}>
 
-            <div>
+            <Link to={"/"} className='text-white'>
                 logo
-            </div>
+            </Link>
 
             <div className='flex items-center justify-center md:gap-[20%] gap-8 text-A-off-text font-semibold'>
                 <div>
@@ -50,7 +53,11 @@ const Header = () => {
                                 <IoIosNotifications size={24} />
                             </div>
 
-                            <Link to={boardURL} className='text-A-off-text font-semibold'>
+                            <Link to={boardURL} className='text-A-off-text font-semibold lg-real:block hidden'>
+                                Board
+                            </Link>
+
+                            <Link to={mobileBoardURL} className='text-A-off-text font-semibold lg-real:hidden block'>
                                 Board
                             </Link>
                         </>
