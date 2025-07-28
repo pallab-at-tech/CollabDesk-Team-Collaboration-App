@@ -75,7 +75,7 @@ const CreateTeam = ({ close }) => {
         <section className='fixed top-0 bottom-0 left-0 right-0 bg-neutral-900/70 z-50 flex items-center justify-center'>
 
             <div
-                className='bg-[#fff] text-black grid grid-cols-[600px_200px] overflow-hidden min-h-[470px]'
+                className='bg-[#fff] text-black grid ipad_pro:grid-cols-[600px_200px] overflow-hidden ipad_pro:min-h-[470px] mx-10 relative'
                 style={{
                     backgroundImage: `url(${design_bg})`,
                     backgroundSize: 'cover',
@@ -83,7 +83,7 @@ const CreateTeam = ({ close }) => {
                     backgroundRepeat: 'no-repeat'
                 }}
             >
-                <div className='flex justify-center items-center pr-[40%] p-12'>
+                <div className='flex justify-center items-center mini_tab:pr-[40%] mini_tab:p-12 p-6'>
                     <form onSubmit={handleOnSubmit} className='flex flex-col gap-2.5'>
 
                         <div>
@@ -133,7 +133,7 @@ const CreateTeam = ({ close }) => {
                     </form>
                 </div>
 
-                <div className='pr-6 pt-2'>
+                <div className='w-fit absolute right-0 pr-6 pt-2'>
                     <IoMdCloseCircleOutline className='float-right cursor-pointer' size={28} onClick={() => close()} />
                 </div>
             </div>

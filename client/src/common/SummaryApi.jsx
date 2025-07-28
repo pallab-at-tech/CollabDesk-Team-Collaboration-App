@@ -24,6 +24,14 @@ const SummaryApi = {
     team_details : {
         url : "/api/teaming/team-details",
         method : "get"
+    },
+    taskBoard_create : {
+        url : "/api/task/create-taskBoard",
+        method : "post"
+    },
+    task_details : {
+        url : "/api/task/task-deatails",
+        method : "get"
     }
 }
 

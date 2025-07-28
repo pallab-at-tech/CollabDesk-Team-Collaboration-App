@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useGlobalContext } from "../../provider/GlobalProvider"
 import { IoIosNotifications } from "react-icons/io";
 import { useSelector } from 'react-redux';
-
+import { CgProfile } from "react-icons/cg";
 
 
 const Header = () => {
@@ -17,8 +17,6 @@ const Header = () => {
     const boardURL = `/board/${user?.name}-${user?._id}/${user?.roles[0]?.teamId}`
     const mobileBoardURL = `/board/${user?.name}-${user?._id}`
 
-    console.log("mobileBoardURL",mobileBoardURL)
-
     useEffect(() => {
         setIsLogin(fetchIsLogin())
     }, [fetchIsLogin])
@@ -28,13 +26,13 @@ const Header = () => {
 
 
     return (
-        <header className={`${isLogin ? "bg-A-off-color" : "bg-[var(--primary-color)]"} min-h-[60px] grid grid-cols-[1fr_2fr_2fr] items-center relative z-50`}>
+        <header className={`${isLogin ? "bg-A-off-color" : "bg-[var(--primary-color)]"} min-h-[60px] grid mini_tab:grid-cols-[1fr_2fr_2fr] grid-cols-2 items-center relative z-50`}>
 
             <Link to={"/"} className='text-white'>
                 logo
             </Link>
 
-            <div className='flex items-center justify-center md:gap-[20%] gap-8 text-A-off-text font-semibold'>
+            <div className='items-center justify-center md:gap-[20%] gap-8 text-A-off-text font-semibold mini_tab:flex hidden'>
                 <div>
                     Features
                 </div>
@@ -44,7 +42,7 @@ const Header = () => {
                 </div>
             </div>
 
-            <div className='flex items-center justify-center gap-10'>
+            <div className='flex items-center justify-center mini_tab:gap-10 gap-7'>
 
                 {
                     isLogin ? (
@@ -53,6 +51,17 @@ const Header = () => {
                                 <IoIosNotifications size={24} />
                             </div>
 
+                            {
+                                user.avatar ? (
+                                    <div></div>
+                                ) : (
+                                    <Link className='text-A-off-text'>
+                                        <CgProfile size={24} />
+                                    </Link>
+                                )
+                            }
+
+
                             <Link to={boardURL} className='text-A-off-text font-semibold lg-real:block hidden'>
                                 Board
                             </Link>
@@ -60,6 +69,7 @@ const Header = () => {
                             <Link to={mobileBoardURL} className='text-A-off-text font-semibold lg-real:hidden block'>
                                 Board
                             </Link>
+
                         </>
                     ) : (
                         <Link to={"/login"} className='bg-[#005eff] py-[7px] px-3 rounded text-white transition-all duration-150 hover:bg-[#0055e8] hover:scale-105 cursor-pointer text-center'>

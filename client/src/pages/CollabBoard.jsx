@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import student from "../assets/test-student-banner1.png"
 import engineering from "../assets/engineering-banner.png"
@@ -9,10 +9,12 @@ import other from "../assets/other-banner.png"
 import { Outlet } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { VscTriangleRight } from "react-icons/vsc";
+import { useGlobalContext } from '../provider/GlobalProvider'
 
 const CollabBoard = () => {
 
   const user = useSelector(state => state.user)
+  const { fetchTaskDetails } = useGlobalContext()
 
   const bannerCombo = {
     "Engineering-IT": engineering,
@@ -23,6 +25,7 @@ const CollabBoard = () => {
     "other": other
   }
   const boardURL = `/board/${user?.name}-${user?._id}`
+
 
 
 

@@ -4,6 +4,8 @@ import Axios from '../utils/Axios'
 import SummaryApi from '../common/SummaryApi'
 import { setUserDetails } from '../store/userSlice'
 import { setTeamDetails } from '../store/teamSlice'
+import { setTask } from '../store/taskSlice'
+import toast from 'react-hot-toast'
 
 export const GlobalContext = createContext(null)
 export const useGlobalContext = () => useContext(GlobalContext)
@@ -41,24 +43,55 @@ const GlobalProvider = ({ children }) => {
         return login === "true"
     }
 
-    const fetchTeamDetails = async(teamId) =>{
+    const fetchTeamDetails = async (teamId) => {
 
         try {
             const response = await Axios({
                 ...SummaryApi.team_details,
-                params : {
+                params: {
                     teamId,
                 }
             })
 
-            const { data : responseData} = response
+            const { data: responseData } = response
 
-            if(responseData?.success){
+            if (responseData?.error) {
+                toast.error(responseData?.message)
+            }
+
+            if (responseData?.success) {
                 dispatch(setTeamDetails(responseData?.data))
             }
 
         } catch (error) {
-            console.log("error for fetchTeamDetails",error)
+            console.log("error for fetchTeamDetails", error)
+        }
+    }
+
+    const fetchTaskDetails = async (teamId) => {
+        try {
+
+            console.log("fetchTaskDetails team id",teamId)
+
+            const response = await Axios({
+                ...SummaryApi.task_details,
+                params : {
+                    teamId : teamId
+                }
+            })
+
+            const { data: responseData } = response
+
+            if (responseData?.error) {
+                toast.error(responseData?.message)
+            }
+
+            if (responseData?.success) {
+                dispatch(setTask(responseData?.data))
+            }
+
+        } catch (error) {
+            console.log("error occur for fetchTaskDetails", error)
         }
     }
 
@@ -71,7 +104,7 @@ const GlobalProvider = ({ children }) => {
 
 
     return (
-        <GlobalContext.Provider value={{ fetchUserAllDetails, fetchIsLogin , fetchTeamDetails }}>
+        <GlobalContext.Provider value={{ fetchUserAllDetails, fetchIsLogin, fetchTeamDetails, fetchTaskDetails }}>
             {
                 children
             }

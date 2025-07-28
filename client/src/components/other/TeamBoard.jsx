@@ -1,16 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useGlobalContext } from '../../provider/GlobalProvider'
 import { useEffect } from 'react'
 import { IoIosPersonAdd } from "react-icons/io";
 import { Outlet } from 'react-router-dom'
+import SearchMember from './SearchMember'
 
 const TeamBoard = () => {
 
     const params = useParams()
     const dispatch = useDispatch()
     const team = useSelector(state => state.team)
+    const [openSearchMember, setOpenSearchMember] = useState(false)
 
     const { fetchTeamDetails } = useGlobalContext()
 
@@ -18,7 +20,6 @@ const TeamBoard = () => {
         fetchTeamDetails(params?.team)
     }, [params])
 
-    console.log("team all details...", params)
 
 
     return (
@@ -39,22 +40,28 @@ const TeamBoard = () => {
 
                 <div className='flex gap-x-6'>
 
-                    <div className='cursor-pointer' title='add member'>
-                        <IoIosPersonAdd size={32}/>
+                    <div className='cursor-pointer' title='add member' onClick={()=>setOpenSearchMember(true)}>
+                        <IoIosPersonAdd size={32} />
                     </div>
 
                     <Link to={`/board/${params.user}/${params.team}/edit`} className='bg-[#2e322e] px-3 text-white py-1 rounded-md cursor-pointer'>edit</Link>
-                    
+
                 </div>
-                
+
             </div>
 
 
-           <div>
+            <div>
                 {
-                    <Outlet/>
+                    <Outlet />
                 }
-            </div> 
+            </div>
+
+            {
+                openSearchMember && (
+                    <SearchMember close={()=>setOpenSearchMember(false)}/>
+                )
+            }
 
         </section>
     )
