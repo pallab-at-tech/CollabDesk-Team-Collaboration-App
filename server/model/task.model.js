@@ -1,59 +1,69 @@
 import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema({
-    title : {
-        type : String,
-        required : true
+    title: {
+        type: String,
+        required: true
     },
-    description : {
-        type : String,
-        default : ""
+    description: {
+        type: String,
+        default: ""
     },
-    assignby : {
-        type : mongoose.Schema.ObjectId,
-        ref : "user"
+    assignby: {
+        type: mongoose.Schema.ObjectId,
+        ref: "user"
     },
-    status : {
-        type : String,
-        default : ""
+    assignTo: {
+        type: mongoose.Schema.ObjectId,
+        ref: "user"
     },
-    dueDate : {
-        type : Date,
-        default : null
+    status: {
+        type: String,
+        default: ""
     },
-    labels : [
+    aditional_link: [
         {
-            type : String,
-            default : ""
+            type: Object,
+            default: {}
+        }
+    ],
+    dueDate: {
+        type: Date,
+        default: null
+    },
+    labels: [
+        {
+            type: String,
+            default: ""
         }
     ]
 })
 
 
 const columnSchema = new mongoose.Schema({
-    name : {
-        type : String,
-        required : true
+    name: {
+        type: String,
+        required: true
     },
-    tasks : [taskSchema]
+    tasks: [taskSchema]
 })
 
 const taskBoardSchema = new mongoose.Schema({
-    teamId : {
-        type : mongoose.Schema.ObjectId,
-        ref : "team"
+    teamId: {
+        type: mongoose.Schema.ObjectId,
+        ref: "team"
     },
-    name : {
-        type : String,
-        required : true
+    name: {
+        type: String,
+        required: true
     },
-    column : [
+    column: [
         columnSchema
     ],
 
-},{
-    timestamps : true
+}, {
+    timestamps: true
 })
 
-const taskModel = mongoose.model("task" , taskBoardSchema)
+const taskModel = mongoose.model("taskboard", taskBoardSchema)
 export default taskModel

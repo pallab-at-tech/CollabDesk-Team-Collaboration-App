@@ -173,8 +173,6 @@ export const getTeamDetailsController = async (request, response) => {
 
         const {teamId} = request.query || {}
 
-        console.log("teamId",teamId)
-
         if(!teamId){
             return response.status(400).json({
                 message : 'Team Id required',

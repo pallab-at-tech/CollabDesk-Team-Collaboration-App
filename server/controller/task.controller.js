@@ -21,6 +21,16 @@ export const taskBoardCreateController = async (request, response) => {
             })
         }
 
+        const isAlreadyTaskBoardExist = await taskModel.find({ teamId: teamId })
+
+        if (isAlreadyTaskBoardExist) {
+            return response.status(400).json({
+                message: 'task already exist',
+                error: true,
+                success: false
+            })
+        }
+
         const payload = {
             teamId,
             name,
@@ -30,9 +40,39 @@ export const taskBoardCreateController = async (request, response) => {
         const save = createTaskBoard.save()
 
         return response.json({
-            message : 'Task create successfully',
-            error : false,
-            success : true
+            message: 'Task board create successfully',
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+export const getTaskDetailsController = async (request, response) => {
+    try {
+        const {teamId} = request.query || {}
+
+        if (!teamId) {
+            return response.status(400).json({
+                message: 'team ID required',
+                error: true,
+                success: false
+            })
+        }
+
+        const data = await taskModel.findOne({ teamId: teamId })
+
+        return response.json({
+            message: 'get task details',
+            data: data,
+            error: false,
+            success: true
         })
 
     } catch (error) {
