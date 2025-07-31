@@ -21,6 +21,14 @@ const taskSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    image: {
+        type: String,
+        default: ""
+    },
+    video: {
+        type: String,
+        default: ""
+    },
     aditional_link: [
         {
             type: Object,
