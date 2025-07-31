@@ -15,7 +15,7 @@ const taskSlice = createSlice({
             state._id = action.payload?._id
             state.teamId = action.payload?.teamId
             state.name = action.payload?.name
-            state.column = [...action.payload?.column]
+            state.column = action.payload?.column
         }
     }
 })

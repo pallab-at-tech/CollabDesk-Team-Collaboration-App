@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import noTask from "../../assets/no-task.png"
 import { useParams } from 'react-router-dom'
 import Axios from '../../utils/Axios'
@@ -6,15 +6,23 @@ import SummaryApi from '../../common/SummaryApi'
 import toast from 'react-hot-toast'
 import { useSelector } from 'react-redux'
 import { useGlobalContext } from '../../provider/GlobalProvider'
+import CreateNewColumn from '../common/CreateNewColumn'
+import VerticleLine from '../../utils/VerticleLine'
+import { HiOutlineDotsVertical } from "react-icons/hi";
+import CoumnAllSettings from '../common/CoumnAllSettings'
+import ColumnItem from '../common/ColumnItem'
+
 
 const MainTeamBoard = () => {
 
     const [data, setData] = useState({
         name: ""
     })
+    const [openCreateColumn, setOpenCreateColumn] = useState(false)
+    const [columnSetting, setColumnSetting] = useState(null)
     const params = useParams()
-
     const { fetchTaskDetails } = useGlobalContext()
+
 
     const handleOnChange = (e) => {
         const { name, value } = e.target
@@ -48,6 +56,7 @@ const MainTeamBoard = () => {
                 setData({
                     name: ""
                 })
+                fetchTaskDetails(params?.team)
             }
 
         } catch (error) {
@@ -57,7 +66,8 @@ const MainTeamBoard = () => {
 
     useEffect(() => {
         fetchTaskDetails(params?.team)
-    }, [])
+        console.log("params?.team", params?.team)
+    }, [params?.team])
 
     const task = useSelector(state => state.task)
 
@@ -67,19 +77,69 @@ const MainTeamBoard = () => {
     return (
         <section>
 
-            <div className='max-h-[calc(100vh-130px)] p-6 min-h-[calc(100vh-130px)] overflow-y-auto bg-B-color mini_tab:mx-10 rounded-b relative'>
+            <div className='max-h-[calc(100vh-130px)] px-6 py-4 min-h-[calc(100vh-130px)] overflow-y-auto bg-B-color mini_tab:mx-10 rounded-b relative'>
 
                 {
-                    !task?._id && (
-                        <form onSubmit={handleOnSubmit} className='ipad_pro:mx-10 ipad_pro:my-4 mini_tab:mx-6 mini_tab:my-4'>
+                    !task?._id ? (
+                        <form onSubmit={handleOnSubmit} className='ipad_pro:mx-6 ipad_pro:my-4 mini_tab:mx-6 mini_tab:my-4'>
 
                             <h1 className='font-bold mini_tab:text-[20px] text-[16px] text-[#111211] w-fit'>Enter name to create task Board :</h1>
 
                             <input type="text" name='name' value={data.name} onChange={handleOnChange} className='bg-[#6f6f6f90] mini_tab:w-[311px] w-[249px] mb-2 mt-1 outline-none rounded mini_tab:py-1.5 py-1 px-2' placeholder='Enter here ...' />
 
-                            <button className='bg-A-off-color hover:bg-[#015f20] transition-colors text-A-off-text w-fit mini_tab:px-3 mini_tab:py-1.5 px-2 py-1 rounded cursor-pointer block'>Create</button>
+                            <button className='bg-[#1a801f] hover:bg-[#015f20] transition-colors text-A-off-text w-fit mini_tab:px-3 mini_tab:py-1.5 px-2 py-1 rounded cursor-pointer block'>Create</button>
 
                         </form>
+                    ) : (
+                        <div>
+
+                            <div className='bg-[#eaeaea] w-fit p-2.5 rounded flex items-center gap-x-4'>
+                                <div onClick={() => setOpenCreateColumn(true)} className='bg-[#1a801f] hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
+                                    New column
+                                </div>
+
+                                <div className='bg-[#1a801f] hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
+                                    Track task
+                                </div>
+
+                                <div className='bg-[#1a801f] hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
+                                    Recent deadline
+                                </div>
+
+                                <div className='bg-[#1a801f] hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
+                                    status
+                                </div>
+                            </div>
+
+                            <div className='ml-8 mt-8'>
+
+                                <div className='bg-orange-700 text-white font-bold w-fit px-1 py-2 rounded'>
+                                    {
+                                        task?.name
+                                    }
+                                </div>
+
+                                <div className='ml-8 mt-4'>
+                                    {
+                                        Array.isArray(task?.column) && (
+                                            task?.column.map((val, idx) => {
+                                                return (
+                                                    <ColumnItem
+                                                        key={val._id}
+                                                        val={val}
+                                                        isOpen={columnSetting === val._id}
+                                                        setColumnSetting={setColumnSetting}
+                                                    />
+                                                )
+                                            })
+                                        )
+                                    }
+                                </div>
+
+                            </div>
+
+
+                        </div>
                     )
                 }
 
@@ -96,6 +156,14 @@ const MainTeamBoard = () => {
 
 
             </div>
+
+
+
+            {
+                openCreateColumn && (
+                    <CreateNewColumn close={() => setOpenCreateColumn(false)} />
+                )
+            }
 
 
 

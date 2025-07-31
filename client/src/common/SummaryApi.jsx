@@ -32,6 +32,10 @@ const SummaryApi = {
     task_details : {
         url : "/api/task/task-deatails",
         method : "get"
+    },
+    task_column_create : {
+        url : "/api/task/create-column",
+        method : "put"
     }
 }
 
