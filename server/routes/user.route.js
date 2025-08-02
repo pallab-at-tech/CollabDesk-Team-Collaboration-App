@@ -1,5 +1,5 @@
 import express from 'express'
-import { userDetailsController, userEmailVerificationController, userForgotPassword, userLoginController, userLogOutController, userRefressingTokenController, userRegisterController, userVerifyForgotPasswordController } from '../controller/user.controller.js'
+import { userDetailsController, userEmailVerificationController, userForgotPassword, userLoginController, userLogOutController, userRefressingTokenController, userRegisterController, userSearchController, userVerifyForgotPasswordController } from '../controller/user.controller.js'
 import auth from '../middleware/auth.js'
 
 
@@ -13,5 +13,6 @@ userRoute.put("/forgot-password",userForgotPassword)
 userRoute.put("/verify-forgot-password",userVerifyForgotPasswordController)
 userRoute.post("/refresh-token",userRefressingTokenController)
 userRoute.get("/user-details",auth,userDetailsController)
+userRoute.get("/user-search",auth,userSearchController)
 
 export default userRoute

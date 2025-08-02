@@ -45,7 +45,7 @@ export const userRegisterController = async (request, response) => {
             email,
             password: hashPassword,
             verify_code: num,
-            userId: uniqueId
+            userId: name.split(" ")[0] + `-${uniqueId}`
         }
 
         const newUser = new userModel(payload)
@@ -404,6 +404,53 @@ export const userDetailsController = async (request, response) => {
             data: userData,
             error: false,
             success: true
+        })
+
+    } catch (error) {
+        return response.status(400).json({
+            message: error.message || error,
+            success: false,
+            error: true
+        })
+    }
+}
+
+export const userSearchController = async (request, response) => {
+    try {
+        const { searchTerm } = request.query || {}
+
+        if (!searchTerm) {
+            return response.status(400).json({
+                message: 'Provide userId or name',
+                error: true,
+                success: false
+            })
+        }
+
+        const query = searchTerm ? {
+            $text: {
+                $search: searchTerm
+            }
+        } : {}
+
+        const result = await userModel.find(
+            query
+        ).select("_id name userId avatar roles")
+
+
+        if (!Array.isArray(result) || result.length === 0) {
+            return response.status(400).json({
+                message: "Result not found",
+                error: true,
+                success: false
+            })
+        }
+
+        return response.json({
+            message: "user list",
+            error: false,
+            success: true,
+            result: result
         })
 
     } catch (error) {

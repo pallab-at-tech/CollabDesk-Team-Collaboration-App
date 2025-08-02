@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import teamModel from "../model/team.model.js";
 import userModel from "../model/user.model.js";
 
@@ -23,6 +24,8 @@ export const teamCreateController = async (request, response) => {
             })
         }
 
+        const user = await userModel.findById(userId)
+
         const payload = {
             name,
             description,
@@ -30,7 +33,8 @@ export const teamCreateController = async (request, response) => {
             member: [
                 {
                     userId,
-                    role
+                    role,
+                    userName: user.userId
                 }
             ]
         }
@@ -69,24 +73,23 @@ export const teamCreateController = async (request, response) => {
     }
 }
 
-export const addTeamMemberByLeaderController = async (request, response) => {
+export const addMemberByLeaderController = async (request, response) => {
     try {
 
         const leaderId = request.userId
-        const { userIdArray = [], teamId, role = "MEMBER" } = request.body || {}
-
+        const { userId, teamId } = request.body || {}
 
         if (!teamId) {
             return response.status(400).json({
-                message: 'team Id required',
+                message: 'team ID required',
                 error: true,
                 success: false
             })
         }
 
-        if (!Array.isArray(userIdArray) || userIdArray.length === 0) {
+        if (!userId) {
             return response.status(400).json({
-                message: 'provide userId',
+                message: 'user ID required',
                 error: true,
                 success: false
             })
@@ -102,8 +105,8 @@ export const addTeamMemberByLeaderController = async (request, response) => {
             })
         }
 
-        const isTeamLeader = team.member.some((m) => m.userId.toString() === leaderId.toString() && m.role !== "MEMBER")
-     
+        const isTeamLeader = team.member.some((m) => m.userId.toString() === leaderId?.toString() && m.role !== "MEMBER")
+
         if (!isTeamLeader) {
             return response.status(400).json({
                 message: "you haven't the access to add member",
@@ -112,51 +115,124 @@ export const addTeamMemberByLeaderController = async (request, response) => {
             })
         }
 
-        const existingIds = team.member.map((m) => m.userId.toString())
+        const isUserAlreadyAvailable = team.member.some((m) => m.userId.toString() === userId.toString())
 
-        const newMember = userIdArray.filter(
-            (userId) => userId && !existingIds.includes(userId.toString())
-        )
-
-
-        if (newMember.length === 0) {
+        if (isUserAlreadyAvailable) {
             return response.status(400).json({
-                message: "users already exist in team",
+                message: "User already present in team",
                 error: true,
                 success: false
             })
         }
 
-        newMember.forEach(
-            (m) => {
-                team.member.push({ userId: m, role: role })
-            }
-        )
+        const userLeader = await userModel.findById(leaderId)
 
-        await team.save()
+        const userUpdate = await userModel.findById(userId)
 
-        const updatePromises = newMember.map(
-            (userId) => {
-                return userModel.findByIdAndUpdate(
-                    userId,
-                    {
-                        $push: {
-                            roles: {
-                                teamId,
-                                role: role
-                            }
-                        }
-                    }
-                )
-            }
-        )
+        userUpdate.request.push({
+            teamId: teamId,
+            teamName: team.name,
+            requestedBy_id: leaderId,
+            requestedBy_userId: userLeader.userId
+        })
 
-        await Promise.all(updatePromises)
+        await userUpdate.save()
+
+        userLeader.send.push({
+            teamId: teamId,
+            teamName: team.name,
+            requestSendTo_id: userId,
+            requestSendTo_userId: userUpdate.userId
+        })
+
+        await userLeader.save()
+
 
         return response.json({
-            message: "members added in team",
+            message: `request sent to ${userUpdate.userId}`,
             error: false,
             success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+
+export const withdrawRequestMemberByLeaderController = async (request, response) => {
+    try {
+
+        const leaderId = request.userId
+        const { userId, teamId } = request.body || {}
+
+        if (!userId) {
+            return response.status(400).json({
+                message: 'provide userId',
+                error: true,
+                success: false
+            })
+        }
+
+        if (!teamId) {
+            return response.status(400).json({
+                message: 'provide teamId',
+                error: true,
+                success: false
+            })
+        }
+
+        const leader = await userModel.findById(leaderId)
+        const user = await userModel.findById(userId)
+
+        const team = await teamModel.findById(teamId)
+
+        const isTeamLeader = team.member.some((m) => m.userId.toString() === leaderId?.toString() && m.role !== "MEMBER")
+
+        if (!isTeamLeader) {
+            return response.status(400).json({
+                message: "you haven't the access to this action",
+                error: true,
+                success: false
+            })
+        }
+
+        const isUserAlreadyAvailable = team.member.some((m) => m.userId.toString() === userId.toString())
+
+        if (isUserAlreadyAvailable) {
+            return response.status(400).json({
+                message: "User already present in team",
+                error: true,
+                success: false
+            })
+        }
+
+
+        leader.send.pull({
+            teamId : teamId,
+            teamName : team.name,
+            requestSendTo_id : userId,
+            requestSendTo_userId : user.userId
+        })
+
+        leader.save()
+
+        user.request.pull({
+            teamId: teamId,
+            teamName: team.name,
+            requestedBy_id: leaderId,
+            requestedBy_userId: leader.userId
+        })
+
+        user.save()
+
+        return response.json({
+            message : `request successfully withdraw from ${user.userId}`,
+            error : false,
+            success : true
         })
 
     } catch (error) {
@@ -171,23 +247,23 @@ export const addTeamMemberByLeaderController = async (request, response) => {
 export const getTeamDetailsController = async (request, response) => {
     try {
 
-        const {teamId} = request.query || {}
+        const { teamId } = request.query || {}
 
-        if(!teamId){
+        if (!teamId) {
             return response.status(400).json({
-                message : 'Team Id required',
-                error : true,
-                success : false
+                message: 'Team Id required',
+                error: true,
+                success: false
             })
         }
 
         const teamDetails = await teamModel.findById(teamId)
 
         return response.json({
-            message : 'Got team details',
-            data : teamDetails,
-            error : false,
-            success : true
+            message: 'Got team details',
+            data: teamDetails,
+            error: false,
+            success: true
         })
 
     } catch (error) {
@@ -198,3 +274,71 @@ export const getTeamDetailsController = async (request, response) => {
         })
     }
 }
+
+export const teamSearchController = async (request, response) => {
+    try {
+
+        const { searchItem, teamId } = request.query || {}
+
+        if (!searchItem) {
+            return response.status(400).json({
+                message: 'Missing serch Item',
+                error: true,
+                success: false
+            })
+        }
+
+        const result = await teamModel.aggregate([
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(teamId)
+                }
+            },
+            {
+                $project: {
+                    member: {
+                        $filter: {
+                            input: "$member",
+                            as: 'm',
+                            cond: {
+                                $regexMatch: {
+                                    input: "$$m.userName",
+                                    regex: searchItem,
+                                    options: "i"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ])
+
+
+        const matchedMembers = result[0]?.member || [];
+
+        if (matchedMembers.length === 0) {
+            return response.status(404).json({
+                message: "No matching members found",
+                error: true,
+                success: false,
+            });
+        }
+
+
+        return response.json({
+            message: 'All result of query',
+            error: false,
+            success: true,
+            query: result
+        })
+
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false
+        })
+    }
+}
+

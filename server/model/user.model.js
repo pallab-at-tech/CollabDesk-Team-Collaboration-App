@@ -21,6 +21,45 @@ const RoleSchema = new mongoose.Schema({
     }
 })
 
+const teamRequest = new mongoose.Schema({
+    teamId: {
+        type: mongoose.Schema.ObjectId,
+        ref: "team"
+    },
+    teamName : {
+        type : String,
+        default : ""
+    },
+    requestedBy_id : {
+        type : mongoose.Schema.ObjectId,
+        ref : "user"
+    },
+    requestedBy_userId : {
+        type : String,
+        default : ""
+    }
+
+})
+
+const teamSend = new mongoose.Schema({
+    teamId: {
+        type: mongoose.Schema.ObjectId,
+        ref: "team"
+    },
+    teamName : {
+        type : String,
+        default : ""
+    },
+    requestSendTo_id : {
+        type : mongoose.Schema.ObjectId,
+        ref : "user"
+    },
+    requestSendTo_userId : {
+        type : String,
+        default : ""
+    }
+})
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -41,6 +80,12 @@ const userSchema = new mongoose.Schema({
     },
     roles: [
         RoleSchema
+    ],
+    request : [
+        teamRequest
+    ],
+    send : [
+        teamSend
     ],
     avatar: {
         type: String,
@@ -69,6 +114,22 @@ const userSchema = new mongoose.Schema({
 }, {
     timestamps: true
 })
+
+userSchema.index(
+    {
+        name : "text",
+        userId : "text",
+        email : "text"
+    },
+    {
+        weights : {
+            name : 5,
+            userId : 10,
+            email : 10
+        },
+        name: "user_text_search_index"
+    },
+)
 
 const userModel = mongoose.model("user", userSchema)
 export default userModel
