@@ -36,6 +36,18 @@ const SummaryApi = {
     task_column_create : {
         url : "/api/task/create-column",
         method : "put"
+    },
+    user_search : {
+        url : "/api/user/user-search",
+        method : "get"
+    },
+    add_member : {
+        url : "/api/teaming/add-member",
+        method : "post"
+    },
+    request_withdraw_byLeader : {
+        url : "/api/teaming/request-withdraw-by-leader",
+        method : "post"
     }
 }
 

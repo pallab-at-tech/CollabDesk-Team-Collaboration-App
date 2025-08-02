@@ -7,6 +7,8 @@ const initialValue = {
     roles: [],
     avatar: "",
     verify_email: false,
+    request : [],
+    send : []
 }
 
 const userSlice = createSlice({
@@ -20,6 +22,8 @@ const userSlice = createSlice({
             state.roles = [...action.payload?.roles]
             state.avatar = action.payload?.avatar
             state.verify_email = action.payload?.verify_email
+            state.request = action.payload?.request
+            state.send = action.payload?.send
         },
         setUserLogout : (state , action) =>{
             state._id = ""
@@ -28,6 +32,8 @@ const userSlice = createSlice({
             state.roles = []
             state.avatar = ""
             state.verify_email = false
+            state.request = []
+            state.send = []
         }
     }
 })

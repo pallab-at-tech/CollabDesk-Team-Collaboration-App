@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom'
 import { useGlobalContext } from '../../provider/GlobalProvider'
 import { IoClose } from "react-icons/io5";
 import { FaRegChartBar } from "react-icons/fa6";
+import { GiTimeTrap } from "react-icons/gi";
+import { SiStagetimer } from "react-icons/si";
 
 const CreateNewTask = ({ columnId, close, columnName }) => {
 
@@ -25,6 +27,8 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
         image: "",
         video: ""
     })
+
+
     const { fetchTaskDetails } = useGlobalContext()
 
     const handleChange = (e) => {
@@ -39,7 +43,10 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
         })
     }
 
-    console.log("para00", params)
+    const handleOnChangePhoto = (e) => {
+
+    }
+
 
     return (
         <section className='fixed right-0 left-0 top-0 bottom-0 flex flex-col items-center justify-center z-50 bg-gray-800/70'>
@@ -83,7 +90,10 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
 
                         <div className='text-lg'>
 
-                            <p className='font-semibold'>Set DeadLine : </p>
+                            <div className='flex gap-2 mb-1'>
+                                <SiStagetimer size={26} className='scale-x-[-1]'/>
+                                <p className='font-semibold'>Set DeadLine : </p>
+                            </div>
 
                             <div className='flex items-center gap-4 mb-1'>
 
@@ -151,15 +161,27 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
                         {/* add image */}
                         <div className='group text-lg'>
 
-                            <p onClick={() => imgRef.current.click()} className='bg-[#f05050] text-white text-base w-[90%] text-center px-1 py-1 rounded cursor-pointer'>Add image</p>
-                            <input type="file" ref={imgRef} accept="image/*" name='image' className='hidden' />
+                            <div onClick={() => imgRef.current.click()} className='bg-[#f05050] text-white text-base w-[90%] text-center px-1 py-1 rounded cursor-pointer'>
+                                {
+                                    !data.image ? (
+                                        <div>Add image</div>
+                                    ) : (
+                                        <div className='flex items-center justify-center gap-1'>
+                                            uploaded
+                                            <div className='tick'></div>
+                                        </div>
+                                    )
+                                }
+                            </div>
+
+                            <input type="file" ref={imgRef} onChange={handleOnChangePhoto} accept="image/*" name='image' className='hidden' />
 
                         </div>
 
                         {/* add video */}
                         <div className='group text-lg'>
 
-                            <p onClick={() => videoRef.current.click()}  className='bg-[#f05050] text-white text-base w-[90%] text-center px-1 py-1 rounded cursor-pointer'>Add video</p>
+                            <p onClick={() => videoRef.current.click()} className='bg-[#f05050] text-white text-base w-[90%] text-center px-1 py-1 rounded cursor-pointer'>Add video</p>
                             <input type="file" ref={videoRef} accept="video/*" name='video' className='hidden' />
 
                         </div>
