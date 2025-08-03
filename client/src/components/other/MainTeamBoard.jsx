@@ -93,33 +93,41 @@ const MainTeamBoard = () => {
                     ) : (
                         <div>
 
-                            <div className='bg-[#eaeaea] w-fit p-2.5 rounded flex items-center gap-x-4'>
-                                <div onClick={() => setOpenCreateColumn(true)} className='bg-[#1a801f] hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
+                            <div className='bg-[#eaeaea] w-fit p-2.5 rounded flex  items-center gap-4 sm:text-lg text-sm'>
+                                <div onClick={() => setOpenCreateColumn(true)} className='bg-[#1a801f] hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer sm:leading-normal leading-5'>
                                     New column
                                 </div>
 
-                                <div className='bg-[#1a801f] hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
+                                <div className='bg-[#1a801f] hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer sm:leading-normal leading-5'>
                                     Track task
                                 </div>
 
-                                <div className='bg-[#1a801f] hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
+                                <div className='bg-[#1a801f] sm:block hidden hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
                                     Recent deadline
                                 </div>
 
-                                <div className='bg-[#1a801f] hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
+                                <div className='bg-[#1a801f]  hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
                                     status
                                 </div>
                             </div>
 
-                            <div className='ml-8 mt-8'>
+                            <div className='bg-[#eaeaea] w-fit p-2.5 rounded my-1 sm:hidden block'>
+                                <div className='bg-[#1a801f] s hover:bg-[#027127] transition-colors duration-100 text-white px-1.5 py-1 rounded cursor-pointer'>
+                                    Recent deadline
+                                </div>
+                            </div>
 
-                                <div className='bg-orange-700 text-white font-bold w-fit px-1 py-2 rounded'>
+
+
+                            <div className='ipad_pro:ml-8 mini_tab:ml-4 ml-1 mt-8'>
+
+                                <div className='bg-orange-700 text-white mini_tab:font-bold font-semibold mini_tab:text-lg text-base w-fit px-1 py-2 rounded'>
                                     {
                                         task?.name
                                     }
                                 </div>
 
-                                <div className='ml-8 mt-4'>
+                                <div className='ipad_pro:ml-8 mini_tab:ml-6 ml-4 mt-4 sm:text-base text-sm'>
                                     {
                                         Array.isArray(task?.column) && (
                                             task?.column.map((val, idx) => {

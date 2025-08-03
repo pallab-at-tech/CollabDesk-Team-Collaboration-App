@@ -33,7 +33,7 @@ const ColumnItem = ({ val, isOpen, setColumnSetting }) => {
             />
 
             {isOpen && (
-                <div ref={dropdownRef} className='absolute -right-4 z-10'>
+                <div ref={dropdownRef} className='absolute -right-12  -top-[115px] z-10'>
                     <CoumnAllSettings columnId={val?._id} columnName={val?.name}/>
                 </div>
             )}

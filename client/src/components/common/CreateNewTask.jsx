@@ -49,17 +49,17 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
 
 
     return (
-        <section className='fixed right-0 left-0 top-0 bottom-0 flex flex-col items-center justify-center z-50 bg-gray-800/70'>
+        <section className='fixed right-0 left-0 top-0 bottom-0 flex flex-col items-center justify-center z-50 sm:bg-gray-800/70 bg-[#dbdbdb] overflow-y-auto'>
 
-            <div className=' bg-[#dbdbdb] rounded  px-1 relative'>
+            <div className=' bg-[#dbdbdb] rounded  px-1 relative sm:w-auto sm:h-auto w-full h-full sm:pt-0 pt-[70px]'>
 
-                <div className='float-end p-2'>
+                <div className='float-end p-2 sm:block hidden'>
                     <IoClose size={24} onClick={() => close()} className='cursor-pointer' />
                 </div>
 
                 <h1 className='text-2xl font-bold text-center py-2'>Column : {columnName}</h1>
 
-                <form className='grid grid-cols-[5fr_3fr] px-4 py-4'>
+                <form className='grid sm:grid-cols-[5fr_3fr] px-4 py-4'>
 
                     <div className='flex flex-col gap-4 justify-center'>
 
@@ -149,7 +149,7 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
 
                     </div>
 
-                    <div className='pl-[20%] flex flex-col gap-4'>
+                    <div className='sm:pl-[20%] pl-[4%] flex flex-col gap-4'>
 
                         <div className='group text-lg'>
                             <p className='font-semibold group-hover:scale-y-105 transition-all duration-500 group-hover:-translate-y-1'>Assign to : </p>

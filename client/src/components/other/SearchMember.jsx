@@ -150,7 +150,7 @@ const SearchMember = ({ close }) => {
     return (
         <section className='fixed right-0 left-0 top-0 bottom-0 flex flex-col items-center justify-center z-50 bg-gray-800/70'>
 
-            <div className='min-h-[220px] max-h-[220px]  min-w-[385px] bg-[#dbdbdb] rounded  px-1 relative'>
+            <div className='min-h-[220px] max-h-[220px]  sm:min-w-[385px] min-w-[350px] bg-[#dbdbdb] rounded  px-1 relative'>
 
                 <h1 className='py-1 px-4 font-semibold'>Search member :</h1>
 
@@ -171,13 +171,13 @@ const SearchMember = ({ close }) => {
                         placeholder='Type user-ID/name/email here ...'
                     />
 
-                    <div className='pl-[120px] pr-4 w-full overflow-y-auto max-h-[145px]'>
+                    <div className='sm:pl-[120px] pl-[100px] pr-4 w-full overflow-y-auto max-h-[145px]'>
 
                         <div className='px-2 w-fit'>
                             {
                                 allSearchData.length > 0 && allSearchData[0] !== "error" && allSearchData.map((val, idx) => {
                                     return (
-                                        <div key={`allSearchData-${idx}`} className='bg-[#bbbbbc] px-2 py-1 rounded grid grid-cols-[30px_83px_1fr] items-center max-w-[226px] min-w-[226px] gap-3 my-1.5'>
+                                        <div key={`allSearchData-${idx}`} className='bg-[#bbbbbc] px-2 py-1 rounded grid sm:grid-cols-[30px_83px_1fr] grid-cols-[28px_70px_1fr] items-center sm:max-w-[226px] sm:min-w-[226px] max-w-[210px] min-w-[210px] gap-3 my-1.5'>
 
                                             <RxAvatar size={32} />
 
@@ -214,7 +214,7 @@ const SearchMember = ({ close }) => {
 
                 </div>
 
-                <img src={searchMember} alt="" className='absolute h-[140px] bottom-0 left-0 pointer-events-none' />
+                <img src={searchMember} alt="" className='absolute sm:h-[140px] h-[125px] bottom-0 sm:left-0 -left-2 pointer-events-none' />
 
             </div>
 
