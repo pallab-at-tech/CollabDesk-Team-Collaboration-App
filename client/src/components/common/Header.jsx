@@ -17,22 +17,25 @@ const Header = () => {
     const boardURL = `/board/${user?.name}-${user?._id}/${user?.roles[0]?.teamId}`
     const mobileBoardURL = `/board/${user?.name}-${user?._id}`
 
+    const profileURL = `/profile/${user?.name}`
+
     useEffect(() => {
         setIsLogin(fetchIsLogin())
     }, [fetchIsLogin])
 
     if (isLogin === null) return null
 
+    
 
 
     return (
-        <header className={`${isLogin ? "bg-A-off-color" : "bg-[var(--primary-color)]"} min-h-[60px] grid mini_tab:grid-cols-[1fr_2fr_2fr] grid-cols-2 items-center relative z-50`}>
+        <header className={`${isLogin ? "bg-A-off-color" : "bg-[var(--primary-color)]"} min-h-[60px] grid mini_tab:grid-cols-[1fr_2fr_2fr] grid-cols-2 items-center z-50 sticky top-0`}>
 
-            <Link to={"/"} className='text-white'>
+            <Link to={"/"} className={`${isLogin ? "text-white" : "" }`}>
                 logo
             </Link>
 
-            <div className='items-center justify-center md:gap-[20%] gap-8 text-A-off-text font-semibold mini_tab:flex hidden'>
+            <div className={`items-center justify-center md:gap-[20%] gap-8 ${isLogin ? "text-A-off-text": ""} font-semibold mini_tab:flex hidden`}>
                 <div>
                     Features
                 </div>
@@ -53,9 +56,9 @@ const Header = () => {
 
                             {
                                 user.avatar ? (
-                                    <div></div>
+                                    <div>IMG</div>
                                 ) : (
-                                    <Link className='text-A-off-text'>
+                                    <Link to={profileURL} className='text-A-off-text'>
                                         <CgProfile size={24} />
                                     </Link>
                                 )

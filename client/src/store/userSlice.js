@@ -8,7 +8,9 @@ const initialValue = {
     avatar: "",
     verify_email: false,
     request : [],
-    send : []
+    send : [],
+    userId : "",
+    about : "",
 }
 
 const userSlice = createSlice({
@@ -24,6 +26,8 @@ const userSlice = createSlice({
             state.verify_email = action.payload?.verify_email
             state.request = action.payload?.request
             state.send = action.payload?.send
+            state.userId = action.payload?.userId
+            state.about = action.payload?.payload
         },
         setUserLogout : (state , action) =>{
             state._id = ""
@@ -34,6 +38,8 @@ const userSlice = createSlice({
             state.verify_email = false
             state.request = []
             state.send = []
+            state.userId = ""
+            state.about = ""
         }
     }
 })

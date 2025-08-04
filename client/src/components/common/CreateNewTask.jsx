@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom'
 import { useGlobalContext } from '../../provider/GlobalProvider'
 import { IoClose } from "react-icons/io5";
 import { FaRegChartBar } from "react-icons/fa6";
-import { GiTimeTrap } from "react-icons/gi";
 import { SiStagetimer } from "react-icons/si";
+import uploadFile from '../../utils/uploadFile';
 
 const CreateNewTask = ({ columnId, close, columnName }) => {
 
@@ -28,6 +28,9 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
         video: ""
     })
 
+    const [loadingPhoto, setloadingPhoto] = useState(false)
+    const [loadingVideo, setloadingVideo] = useState(false)
+
 
     const { fetchTaskDetails } = useGlobalContext()
 
@@ -43,9 +46,45 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
         })
     }
 
-    const handleOnChangePhoto = (e) => {
+    const handleOnPhoto = async (e) => {
+        const file = e.target.files?.[0]
 
+        if (!file) return
+
+        setloadingPhoto(true)
+
+        const response = await uploadFile(file)
+
+        setloadingPhoto(false)
+
+        setData((preve) => {
+            return {
+                ...preve,
+                image: response?.secure_url
+            }
+        })
     }
+
+    const handleOnVideo = async (e) => {
+        const file = e.target.files?.[0]
+
+        if (!file) return
+
+        setloadingVideo(true)
+
+        const response = await uploadFile(file)
+
+        setloadingVideo(false)
+
+        setData((preve) => {
+            return {
+                ...preve,
+                video: response?.secure_url
+            }
+        })
+    }
+
+    console.log("data...", data)
 
 
     return (
@@ -91,7 +130,7 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
                         <div className='text-lg'>
 
                             <div className='flex gap-2 mb-1'>
-                                <SiStagetimer size={26} className='scale-x-[-1]'/>
+                                <SiStagetimer size={26} className='scale-x-[-1]' />
                                 <p className='font-semibold'>Set DeadLine : </p>
                             </div>
 
@@ -163,26 +202,57 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
 
                             <div onClick={() => imgRef.current.click()} className='bg-[#f05050] text-white text-base w-[90%] text-center px-1 py-1 rounded cursor-pointer'>
                                 {
-                                    !data.image ? (
-                                        <div>Add image</div>
-                                    ) : (
-                                        <div className='flex items-center justify-center gap-1'>
-                                            uploaded
-                                            <div className='tick'></div>
+                                    loadingPhoto ? (
+                                        <div className='flex items-center justify-center'>
+                                            <div className='loader'></div>
                                         </div>
+                                    ) : (
+                                        <>
+                                            {
+                                                data.image ? (
+                                                    <div className='flex items-center justify-center gap-1'>
+                                                        uploaded
+                                                        <div className='tick'></div>
+                                                    </div>
+                                                ) : (
+                                                    <div>Add image</div>
+                                                )
+                                            }
+                                        </>
                                     )
                                 }
                             </div>
 
-                            <input type="file" ref={imgRef} onChange={handleOnChangePhoto} accept="image/*" name='image' className='hidden' />
+                            <input type="file" ref={imgRef} onChange={handleOnPhoto} accept="image/*" name='image' className='hidden' />
 
                         </div>
 
                         {/* add video */}
                         <div className='group text-lg'>
 
-                            <p onClick={() => videoRef.current.click()} className='bg-[#f05050] text-white text-base w-[90%] text-center px-1 py-1 rounded cursor-pointer'>Add video</p>
-                            <input type="file" ref={videoRef} accept="video/*" name='video' className='hidden' />
+                            <div onClick={() => videoRef.current.click()} className='bg-[#f05050] text-white text-base w-[90%] text-center px-1 py-1 rounded cursor-pointer'>
+                                {
+                                    loadingVideo ? (
+                                        <div className='flex items-center justify-center'>
+                                            <div className='loader'></div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {
+                                                data.video ? (
+                                                    <div className='flex items-center justify-center gap-1'>
+                                                        uploaded
+                                                        <div className='tick'></div>
+                                                    </div>
+                                                ) : (
+                                                    <div>Add Video</div>
+                                                )
+                                            }
+                                        </>
+                                    )
+                                }
+                            </div>
+                            <input type="file" ref={videoRef} accept="video/*" onChange={handleOnVideo} name='video' className='hidden' />
 
                         </div>
 

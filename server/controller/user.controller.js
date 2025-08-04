@@ -207,7 +207,7 @@ export const userLogOutController = async (request, response) => {
         })
 
         return response.json({
-            message: 'LogOut successfully',
+            message: 'Logout successfully',
             error: false,
             success: true
         })

@@ -8,6 +8,9 @@ import TeamBoard from '../components/other/TeamBoard'
 import MainTeamBoard from '../components/other/MainTeamBoard'
 import TeamBoardEdit from '../components/other/TeamBoardEdit'
 import MobileForCollabBoard from '../pages/MobileForCollabBoard'
+import ProfilePage from '../pages/ProfilePage'
+import Timeline from '../pages/Timeline'
+import EditProfile from '../pages/EditProfile'
 
 const router = createBrowserRouter([
     {
@@ -43,6 +46,20 @@ const router = createBrowserRouter([
                     },
                 ]
                 
+            },
+            {
+                path : "/profile/:user",
+                element : <ProfilePage/>,
+                children : [
+                    {
+                        path : '',
+                        element : <Timeline/>
+                    },
+                    {
+                        path : '/profile/:user/edit',
+                        element : <EditProfile/>
+                    }
+                ]
             }
         ]
     },

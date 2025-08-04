@@ -48,6 +48,10 @@ const SummaryApi = {
     request_withdraw_byLeader : {
         url : "/api/teaming/request-withdraw-by-leader",
         method : "post"
+    },
+    logout : {
+        url : "/api/user/logout",
+        method : "get"
     }
 }
 
