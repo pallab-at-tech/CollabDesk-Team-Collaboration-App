@@ -461,3 +461,35 @@ export const userSearchController = async (request, response) => {
         })
     }
 }
+
+export const updateUserDetailsController = async (request , response) =>{
+    try {
+
+        const userId = request.userId
+        const {name , about , avatar} = request.body || {}
+
+        console.log("about",about)
+
+        const upadateUser = await userModel.findByIdAndUpdate(
+            userId,
+            {
+                ...(name && {name : name}),
+                ...(about && {about : about}),
+                ...(avatar && {avatar : avatar})
+            }
+        )
+
+        return response.json({
+            message : 'Update successfully',
+            error : false,
+            success : true
+        })
+        
+    } catch (error) {
+        return response.status(400).json({
+            message: error.message || error,
+            success: false,
+            error: true
+        })
+    }
+}

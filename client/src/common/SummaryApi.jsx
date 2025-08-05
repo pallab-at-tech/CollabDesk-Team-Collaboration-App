@@ -52,6 +52,10 @@ const SummaryApi = {
     logout : {
         url : "/api/user/logout",
         method : "get"
+    },
+    user_update : {
+        url : "/api/user/user-update",
+        method : "post"
     }
 }
 

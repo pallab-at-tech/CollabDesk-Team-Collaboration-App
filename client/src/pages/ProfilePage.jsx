@@ -1,20 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import profile from "../assets/profile.png"
 import { FiMessageSquare } from "react-icons/fi";
-import { FaEdit } from "react-icons/fa";
-import { FaEye } from "react-icons/fa";
-import { NavLink } from 'react-router-dom'
-import { Outlet } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { FaEdit , FaEye } from "react-icons/fa";
+import { NavLink , Outlet , useParams , useLocation , useNavigate } from 'react-router-dom'
 import UnderLine from '../utils/UnderLine';
-import { useLocation } from 'react-router-dom';
 import Axios from "../utils/Axios"
 import SummaryApi from '../common/SummaryApi';
 import { useDispatch } from 'react-redux';
 import { setUserLogout } from '../store/userSlice';
 import toast from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom';
+import ProfileEdit from '../components/other/ProfileEdit';
 
 const ProfilePage = () => {
 
@@ -31,6 +27,10 @@ const ProfilePage = () => {
     const endPoint = arr[arr.length - 1]
     setPath(endPoint)
   }, [location.pathname])
+
+  const [editAbout, setEditAbout] = useState(false)
+
+  console.log("profiee",user)
 
 
   const handleLogout = async () => {
@@ -78,11 +78,24 @@ const ProfilePage = () => {
           <div>
 
             <div className='flex items-center gap-x-3 mt-4 mb-1'>
-              <p className='font-bold bg-[#179709] w-fit px-1.5 py-0.5 rounded text-white '>About</p>
-              <FaEdit size={22} className='text-[#484848] cursor-pointer' />
+              {
+                 user?.about ? (
+                  <p className='font-bold bg-[#179709] w-fit px-1.5 py-0.5 rounded text-white'>About</p>
+                 ) : (
+                  <p onClick={()=>setEditAbout(true)} className='font-bold bg-[#179709] w-fit px-1.5 py-0.5 rounded text-white cursor-pointer'>add about</p>
+                 )
+              }
+              
+              <FaEdit onClick={()=>setEditAbout(true)} size={22} className={`text-[#484848] ${user?.about ? "cursor-pointer" : "pointer-events-none"} opacity-[70%]`} title='Edit about' />
+
             </div>
 
-            <p>I am a passionate and detail-oriented full-stack web developer with a strong interest in creating efficient, scalable, and user-friendly applications.</p>
+            {
+              user?.about && (
+                 <p>{user?.about}</p>
+              ) 
+            }
+           
           </div>
 
         </div>
@@ -151,6 +164,13 @@ const ProfilePage = () => {
         }
 
       </div>
+
+
+      {
+        editAbout && (
+          <ProfileEdit close={()=>setEditAbout(false)}/>
+        )
+      }
 
     </section>
   )

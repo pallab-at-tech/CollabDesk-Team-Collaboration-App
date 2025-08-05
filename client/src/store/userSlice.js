@@ -27,7 +27,7 @@ const userSlice = createSlice({
             state.request = action.payload?.request
             state.send = action.payload?.send
             state.userId = action.payload?.userId
-            state.about = action.payload?.payload
+            state.about = action.payload?.about
         },
         setUserLogout : (state , action) =>{
             state._id = ""
