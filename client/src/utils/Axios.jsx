@@ -49,6 +49,8 @@ Axios.interceptors.response.use(
                 window.location.href = "/login";
             }
 
+            localStorage.setItem("login", "false");
+
         }
 
         return Promise.reject(error)

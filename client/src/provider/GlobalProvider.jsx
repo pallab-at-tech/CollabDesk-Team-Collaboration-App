@@ -97,8 +97,11 @@ const GlobalProvider = ({ children }) => {
 
     useEffect(() => {
         fetchUserAllDetails();
-        fetchIsLogin()
     }, []);
+
+    useEffect(()=>{
+        fetchIsLogin()
+    },[fetchUserAllDetails])
 
     console.log("user from global provider", user)
 
