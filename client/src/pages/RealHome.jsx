@@ -6,15 +6,14 @@ import { MdFullscreen } from "react-icons/md";
 import { RiEmojiStickerLine } from "react-icons/ri";
 import CreateTeam from '../components/other/CreateTeam';
 
-// #dedbdb #0b1523 #0e1a2b
 const RealHome = () => {
 
     const [openCreateTeam, setOpenCreateTeam] = useState(false)
 
     return (
-        <section className=' bg-gradient-to-b from-[#1b1c29] to-[#21222b] min-h-[calc(100vh-60px)] grid lg-real:grid-cols-2 place-items-center'>
+        <section className='bg-gradient-to-b from-[#1b1c29] to-[#21222b] min-h-[calc(100vh-60px)]  grid lg-real:grid-cols-2 place-items-center'>
 
-            <div className='flex flex-col gap-2 text-A-off-color text-3xl font-semibold'>
+            <div className='flex flex-col gap-2  text-A-off-color text-3xl font-semibold'>
 
                 <div onClick={()=>setOpenCreateTeam(true)} className='flex gap-1 items-center bg-[#116c20] text-white  rounded w-[250px] px-3 py-4 hover:bg-[#0f621d] transition-colors duration-150 cursor-pointer'>
                     <div className=' w-full block px-2 py-1'>create team</div>

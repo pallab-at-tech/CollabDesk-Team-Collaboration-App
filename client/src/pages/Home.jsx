@@ -26,7 +26,7 @@ const Home = () => {
 
 
   return (
-    <section className={`${isLogin ? "bg-A-color" : "bg-gradient-to-t to-[var(--primary-color)] from-[#aab8ed]"} lg_md:min-h-[calc(100vh-60px)] min-h-[110vh] relative `}>
+    <section className={`${isLogin ? "bg-A-color" : "bg-gradient-to-t to-[var(--primary-color)] from-[#aab8ed]"} lg_md:min-h-[calc(100vh-60px)] min-h-[calc(100vh-60px)] relative `}>
 
       {
         !isLogin ? (

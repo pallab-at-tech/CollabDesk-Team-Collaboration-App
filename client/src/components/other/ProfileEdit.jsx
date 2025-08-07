@@ -59,7 +59,7 @@ const ProfileEdit = ({ close }) => {
     };
 
     return (
-        <section className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+        <section className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 text-black">
 
             <form
                 onSubmit={handleSubmit}

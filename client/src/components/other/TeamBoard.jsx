@@ -25,7 +25,7 @@ const TeamBoard = () => {
     return (
         <section className='h-full w-full grid-rows-2'>
 
-            <div className='flex items-center justify-between mini_tab:mx-10 mini_tab:px-6 px-3  py-2 mt-2 mb-1  rounded-t bg-[#b7de40bc] text-white' >
+            <div className='flex items-center justify-between mini_tab:mx-10 mini_tab:px-6 px-3  py-2 mt-2 mb-1  rounded-t bg-[#b7de40e1] text-white' >
 
                 <div className='flex flex-col'>
                     <div className='flex gap-x-1 items-center'>
