@@ -20,12 +20,12 @@ const TeamBoard = () => {
         fetchTeamDetails(params?.team)
     }, [params])
 
-
+//  border border-[#2C2C2C]  style={{ backgroundColor: "rgb(152 168 103 / 52%)" }}
 
     return (
-        <section className='h-full w-full'>
+        <section className='h-full w-full grid-rows-2'>
 
-            <div className='flex items-center justify-between mini_tab:mx-10 mini_tab:px-6 px-3  py-2 mt-2 mb-1  rounded-t' style={{ backgroundColor: "rgb(152 168 103 / 52%)" }}>
+            <div className='flex items-center justify-between mini_tab:mx-10 mini_tab:px-6 px-3  py-2 mt-2 mb-1  rounded-t bg-[#b7de40bc] text-white' >
 
                 <div className='flex flex-col'>
                     <div className='flex gap-x-1 items-center'>
@@ -49,9 +49,10 @@ const TeamBoard = () => {
                 </div>
 
             </div>
+            
 
 
-            <div>
+            <div className=''>
                 {
                     <Outlet />
                 }

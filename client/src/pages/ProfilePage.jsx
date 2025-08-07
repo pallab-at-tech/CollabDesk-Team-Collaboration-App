@@ -54,9 +54,9 @@ const ProfilePage = () => {
 
 
   return (
-    <section className='bg-[#fff] min-h-[calc(100vh-60px)] grid grid-cols-[500px_1fr]'>
+    <section className='bg-[#282932] text-white min-h-[calc(100vh-60px)] grid grid-cols-[500px_1fr]'>
 
-      <div className='px-6 py-4 min-h-[calc(100vh-70px)] max-h-[calc(100vh-70px)] sticky top-[70px] overflow-y-auto hide-scrollbar shadow-md'>
+      <div className='bg-[#21222b] px-6 py-4 min-h-[calc(100vh-70px)] max-h-[calc(100vh-60px)] sticky top-[60px] overflow-y-auto hide-scrollbar shadow-md shadow-[#282828]'>
 
         <div className='mt-4 ml-16 relative w-fit'>
           <img src={profile} alt="" className='h-[200px] w-[188px] rounded-2xl border-2 border-[#179709]' />

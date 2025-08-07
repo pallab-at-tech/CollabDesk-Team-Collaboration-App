@@ -29,7 +29,7 @@ const Header = () => {
 
 
     return (
-        <header className={`${isLogin ? "bg-A-off-color" : "bg-[var(--primary-color)]"} min-h-[60px] grid mini_tab:grid-cols-[1fr_2fr_2fr] grid-cols-2 items-center z-50 sticky top-0`}>
+        <header className={`${isLogin ? "bg-A-off-color" : "bg-[var(--primary-color)]"} min-h-[60px] grid mini_tab:grid-cols-[1fr_2fr_2fr] grid-cols-2 items-center z-50 sticky top-0 `}>
 
             <Link to={"/"} className={`${isLogin ? "text-white" : "" }`}>
                 logo

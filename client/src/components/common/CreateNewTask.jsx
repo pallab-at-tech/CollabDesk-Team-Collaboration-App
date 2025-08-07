@@ -171,7 +171,7 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
     console.log("Taskdata...", data)
 
     return (
-        <section className='fixed right-0 left-0 top-0 bottom-0 flex flex-col items-center justify-center z-50 sm:bg-gray-800/70 bg-[#dbdbdb] overflow-y-auto'>
+        <section className='fixed right-0 left-0 top-0 bottom-0 flex flex-col items-center justify-center z-50 sm:bg-gray-800/75 bg-[#dbdbdb] overflow-y-auto'>
 
             <div className='sm:flex block items-center sm:gap-4 w-full h-full sm:w-auto sm:h-auto'>
 

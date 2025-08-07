@@ -73,11 +73,11 @@ const MainTeamBoard = () => {
 
     console.log("task details", task)
 
-
+// min-h-[calc(100vh-130px)] overflow-y-auto max-h-[calc(100vh-152px)]
     return (
-        <section>
+        <section className=''>
 
-            <div className='max-h-[calc(100vh-130px)] px-6 py-4 min-h-[calc(100vh-130px)] overflow-y-auto bg-B-color mini_tab:mx-10 rounded-b relative'>
+            <div className=' border-2 overflow-y-auto min-h-[calc(100vh-182px)] max-h-[calc(100vh-182px)] border-white px-6 py-8  bg-[#1F2937] mini_tab:mx-10 rounded-b relative'>
 
                 {
                     !task?._id ? (
