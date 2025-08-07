@@ -56,6 +56,10 @@ const SummaryApi = {
     user_update : {
         url : "/api/user/user-update",
         method : "post"
+    },
+    new_task_create : {
+        url : "/api/task/task-create",
+        method : "post"
     }
 }
 

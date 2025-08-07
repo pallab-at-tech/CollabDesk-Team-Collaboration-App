@@ -9,6 +9,9 @@ import AddLink from './AddLink';
 import { AiOutlineSelect } from "react-icons/ai";
 import { useSelector } from 'react-redux';
 import SelectMember from '../other/SelectMember';
+import Axios from '../../utils/Axios';
+import SummaryApi from '../../common/SummaryApi';
+import toast from 'react-hot-toast';
 
 const CreateNewTask = ({ columnId, close, columnName }) => {
 
@@ -26,9 +29,9 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
         status: "",
         aditional_link: [],
         dueDate: "",
+        dueTime: "",
         labels: [],
         date: "",
-        time: "",
         image: "",
         video: ""
     })
@@ -43,6 +46,8 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
 
     const [selectedMembers, setSelectedMembers] = useState([]);
     const [selectMemberForMobile, setSelectMemberForMobile] = useState(false)
+
+    const [loadForSubmit, setLoadForSubmit] = useState(false)
 
     const toggleSelect = (userId) => {
         setSelectedMembers((prev) =>
@@ -105,7 +110,65 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
         })
     }
 
-    console.log("Taskdata...", team?.member)
+    const getCurrentTime = () => {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
+    };
+
+    const isToday = () => {
+        const today = new Date().toISOString().split("T")[0];
+        return data.dueDate === today;
+    };
+
+    const handleOnSubmit = async (e) => {
+        e.preventDefault()
+
+        try {
+            setLoadForSubmit(true)
+
+            const response = await Axios({
+                ...SummaryApi.new_task_create,
+                data: data
+            })
+
+            if (response?.data?.error) {
+                toast.error(response?.data?.message)
+            }
+
+            if (response?.data?.success) {
+                toast.success(response?.data?.message)
+
+                setData({
+                    teamId: "",
+                    columnId: "",
+                    title: "",
+                    description: "",
+                    assignTo: [],
+                    status: "",
+                    aditional_link: [],
+                    dueDate: "",
+                    dueTime: "",
+                    labels: [],
+                    date: "",
+                    image: "",
+                    video: ""
+                })
+
+                fetchTaskDetails(params?.team)
+                close()
+            }
+
+        } catch (error) {
+            console.log("error from create new task", error)
+        } finally {
+            setLoadForSubmit(false)
+        }
+    }
+
+
+    console.log("Taskdata...", data)
 
     return (
         <section className='fixed right-0 left-0 top-0 bottom-0 flex flex-col items-center justify-center z-50 sm:bg-gray-800/70 bg-[#dbdbdb] overflow-y-auto'>
@@ -118,10 +181,9 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
                         <IoClose size={24} onClick={() => close()} className='cursor-pointer' />
                     </div>
 
-
                     <h1 className='text-2xl font-bold text-center py-2'>Column : {columnName}</h1>
 
-                    <form className='grid sm:grid-cols-[5fr_3fr] px-4 py-4'>
+                    <form className='grid sm:grid-cols-[5fr_3fr] px-4 py-4' onSubmit={handleOnSubmit}>
 
                         <div className='flex flex-col gap-4 justify-center'>
 
@@ -168,13 +230,13 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
                                                 setData((preve) => {
                                                     return {
                                                         ...preve,
-                                                        date: value,
-                                                        dueDate: `${value} - ${preve.time}`
+                                                        dueDate: value
                                                     }
 
                                                 })
                                             }}
-                                            name='date' value={data.date} required placeholder='type name here....'
+                                            name='date' value={data.dueDate} required placeholder='type name here....'
+                                            min={new Date().toISOString().split("T")[0]}
                                             className=' w-[140px]  h-8 text-base outline-none p-2 mt-0.5 text-[#100f0f]'
                                         />
 
@@ -185,20 +247,22 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
                                         <p className='font-semibold text-red-600 group-hover:scale-y-105 transition-all duration-500 group-hover:-translate-y-1'>Time : </p>
 
                                         <input type="time"
+
+
                                             onChange={(e) => {
                                                 const { value } = e.target
 
                                                 setData((preve) => {
                                                     return {
                                                         ...preve,
-                                                        time: value,
-                                                        dueDate: `${preve.date} - ${value}`
+                                                        dueTime: value
                                                     }
 
                                                 })
                                             }}
                                             name='time'
-                                            value={data.time} placeholder='type name here....'
+                                            value={data.dueTime} placeholder='type name here....'
+                                            min={isToday() ? getCurrentTime() : undefined}
                                             className=' w-[150px]  h-8 text-base outline-none p-2 mt-0.5 text-[#100f0f]'
                                         />
 
@@ -219,7 +283,7 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
                                     <p className='pb-1 select-none pointer-events-none'>select member</p>
                                 </div>
 
-                                <div onClick={()=>setSelectMemberForMobile(true)} name='assignTo' className='w-[90%] sm:hidden flex bg-gray-400 h-8 text-[16px] outline-none p-2 mt-0.5 text-[#323232] rounded  gap-x-1 items-center justify-center cursor-pointer'>
+                                <div onClick={() => setSelectMemberForMobile(true)} name='assignTo' className='w-[90%] sm:hidden flex bg-gray-400 h-8 text-[16px] outline-none p-2 mt-0.5 text-[#323232] rounded  gap-x-1 items-center justify-center cursor-pointer'>
                                     <AiOutlineSelect size={17} className='select-none pointer-events-none' />
                                     <p className='pb-1 select-none pointer-events-none'>select member</p>
                                 </div>
@@ -292,7 +356,7 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
                                 <div onClick={() => setAddLinkOpen(true)} className='bg-[#cc2929] text-white text-base w-[90%] text-center px-1 py-1 rounded cursor-pointer'>Add Link</div>
                             </div>
 
-                            <button className='bg-[#027d2b] hover:bg-[#027127] transition-colors duration-100 text-white w-[90%] py-2.5 px-2 rounded font-bold mt-[3%]'>Create Task</button>
+                            <button type='submit' className={`bg-[#027d2b] hover:bg-[#027127] transition-colors duration-100 text-white w-[90%] py-2.5 px-2 rounded font-bold mt-[3%] ${loadForSubmit ? "pointer-events-none" : "cursor-pointer"}`}>Create Task</button>
 
                         </div>
 
@@ -347,10 +411,9 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
 
             {
                 selectMemberForMobile && (
-                    <SelectMember close={()=>setSelectMemberForMobile(false)} data={data.assignTo} setAssignData={setData}/>
+                    <SelectMember close={() => setSelectMemberForMobile(false)} data={data.assignTo} setAssignData={setData} />
                 )
             }
-
 
 
         </section>

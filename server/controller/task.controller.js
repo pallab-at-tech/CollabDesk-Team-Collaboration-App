@@ -160,7 +160,7 @@ export const createTaskController = async (request, response) => {
 
         const userId = request.userId
 
-        const { teamId, columnId, title, description, assignTo, status, aditional_link, dueDate, labels , image , video } = request.body || {}
+        const { teamId, columnId, title, description, assignTo, status, aditional_link, dueDate, dueTime, labels, image, video } = request.body || {}
 
         if (!title) {
             return response.status(400).json({
@@ -188,6 +188,15 @@ export const createTaskController = async (request, response) => {
             });
         }
 
+        const taskBoard = await taskModel.findOne({ teamId: teamId })
+
+        if (!taskBoard) {
+            return response.status(404).json({
+                message: 'Task board not found for team',
+                error: true,
+                success: false
+            });
+        }
 
         let hasPermission = false;
 
@@ -207,16 +216,6 @@ export const createTaskController = async (request, response) => {
         }
 
 
-        const taskBoard = await taskModel.findOne({ teamId: teamId })
-
-        if (!taskBoard) {
-            return response.status(404).json({
-                message: 'Task board not found for team',
-                error: true,
-                success: false
-            });
-        }
-
         const column = taskBoard.column.id(columnId)
 
         if (!column) {
@@ -235,6 +234,7 @@ export const createTaskController = async (request, response) => {
             status,
             aditional_link,
             dueDate,
+            dueTime,
             labels,
             image,
             video,
