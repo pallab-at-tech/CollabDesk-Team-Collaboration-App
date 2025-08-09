@@ -20,7 +20,6 @@ const TeamBoard = () => {
         fetchTeamDetails(params?.team)
     }, [params])
 
-//  border border-[#2C2C2C]  style={{ backgroundColor: "rgb(152 168 103 / 52%)" }}
 
     return (
         <section className='h-full w-full grid-rows-2'>

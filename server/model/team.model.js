@@ -16,6 +16,29 @@ const memberSchema = new mongoose.Schema({
     }
 })
 
+const requestSchema = new mongoose.Schema({
+    sendTo_userId: {
+        type: mongoose.Schema.ObjectId,
+        ref: "user"
+    },
+    sendTo_userName: {
+        type: String,
+        default: ""
+    },
+    sendBy_userId: {
+        type: mongoose.Schema.ObjectId,
+        ref: "user"
+    },
+    sendBy_userName: {
+        type: String,
+        default: ""
+    }
+},
+    {
+        timestamps: true
+    }
+)
+
 
 
 const teamSchema = new mongoose.Schema({
@@ -33,6 +56,9 @@ const teamSchema = new mongoose.Schema({
     },
     member: [
         memberSchema
+    ],
+    request_send: [
+        requestSchema
     ]
 }, {
     timestamps: true

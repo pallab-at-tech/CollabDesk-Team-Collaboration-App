@@ -8,7 +8,6 @@ const initialValue = {
     avatar: "",
     verify_email: false,
     request : [],
-    send : [],
     userId : "",
     about : "",
 }
@@ -25,7 +24,6 @@ const userSlice = createSlice({
             state.avatar = action.payload?.avatar
             state.verify_email = action.payload?.verify_email
             state.request = action.payload?.request
-            state.send = action.payload?.send
             state.userId = action.payload?.userId
             state.about = action.payload?.about
         },
@@ -37,7 +35,6 @@ const userSlice = createSlice({
             state.avatar = ""
             state.verify_email = false
             state.request = []
-            state.send = []
             state.userId = ""
             state.about = ""
         }

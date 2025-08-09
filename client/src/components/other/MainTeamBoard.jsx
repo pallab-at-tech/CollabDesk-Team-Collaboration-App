@@ -73,7 +73,6 @@ const MainTeamBoard = () => {
 
     console.log("task details", task)
 
-// min-h-[calc(100vh-130px)] overflow-y-auto max-h-[calc(100vh-152px)]
     return (
         <section className=''>
 

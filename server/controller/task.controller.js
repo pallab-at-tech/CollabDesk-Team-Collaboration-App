@@ -229,7 +229,7 @@ export const createTaskController = async (request, response) => {
         const payload = {
             title,
             description,
-            assignby: userId,
+            assignby: user?.userId,
             assignTo: assignTo,
             status,
             aditional_link,

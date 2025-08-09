@@ -138,14 +138,24 @@ export const addMemberByLeaderController = async (request, response) => {
 
         await userUpdate.save()
 
-        userLeader.send.push({
-            teamId: teamId,
-            teamName: team.name,
-            requestSendTo_id: userId,
-            requestSendTo_userId: userUpdate.userId
+        team.request_send.push({
+            sendTo_userId: userId,
+            sendBy_userId: leaderId,
+
+            sendTo_userName: userUpdate.userId,
+            sendBy_userName: userLeader.userId
         })
 
-        await userLeader.save()
+        await team.save()
+
+        // userLeader.send.push({
+        //     teamId: teamId,
+        //     teamName: team.name,
+        //     requestSendTo_id: userId,
+        //     requestSendTo_userId: userUpdate.userId
+        // })
+
+        // await userLeader.save()
 
 
         return response.json({
@@ -211,14 +221,30 @@ export const withdrawRequestMemberByLeaderController = async (request, response)
         }
 
 
-        leader.send.pull({
-            teamId : teamId,
-            teamName : team.name,
-            requestSendTo_id : userId,
-            requestSendTo_userId : user.userId
+        // leader.send.pull({
+        //     teamId : teamId,
+        //     teamName : team.name,
+        //     requestSendTo_id : userId,
+        //     requestSendTo_userId : user.userId
+        // })
+
+        // leader.save()
+
+        //  sendTo_userId : userId,
+        // sendBy_userId : leaderId,
+
+        // sendTo_userName :userUpdate.userId,
+        // sendBy_userName : userLeader.userId
+
+        team.request_send.pull({
+            sendTo_userId : userId,
+            sendBy_userId : leaderId,
+
+            sendTo_userName : user.userId,
+            sendBy_userName : leader.userId
         })
 
-        leader.save()
+        team.save()
 
         user.request.pull({
             teamId: teamId,
@@ -230,9 +256,9 @@ export const withdrawRequestMemberByLeaderController = async (request, response)
         user.save()
 
         return response.json({
-            message : `request successfully withdraw from ${user.userId}`,
-            error : false,
-            success : true
+            message: `request successfully withdraw from ${user.userId}`,
+            error: false,
+            success: true
         })
 
     } catch (error) {

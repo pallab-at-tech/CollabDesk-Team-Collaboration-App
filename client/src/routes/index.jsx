@@ -3,7 +3,6 @@ import App from "../App"
 import Home from '../pages/Home'
 import SigninPage from '../pages/SigninPage'
 import SignupPage from '../pages/SignupPage'
-import CollabBoard from '../pages/collabBoard'
 import TeamBoard from '../components/other/TeamBoard'
 import MainTeamBoard from '../components/other/MainTeamBoard'
 import TeamBoardEdit from '../components/other/TeamBoardEdit'
@@ -11,6 +10,8 @@ import MobileForCollabBoard from '../pages/MobileForCollabBoard'
 import ProfilePage from '../pages/ProfilePage'
 import Timeline from '../pages/Timeline'
 import EditProfile from '../pages/EditProfile'
+import CollabBoard from "../pages/CollabBoard"
+import ProfileTeamRequest from '../pages/ProfileTeamRequest'
 
 const router = createBrowserRouter([
     {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
                     {
                         path : '',
                         element : <Timeline/>
+                    },
+                    {
+                        path : "/profile/:user/request",
+                        element : <ProfileTeamRequest/>
                     },
                     {
                         path : '/profile/:user/edit',

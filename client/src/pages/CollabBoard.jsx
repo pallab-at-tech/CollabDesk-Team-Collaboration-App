@@ -26,7 +26,6 @@ const CollabBoard = () => {
   }
   const boardURL = `/board/${user?.name}-${user?._id}`
 
-// #c9dcca  #11c538 112 min-h-[calc(100vh-112px)]
 
 
   return (

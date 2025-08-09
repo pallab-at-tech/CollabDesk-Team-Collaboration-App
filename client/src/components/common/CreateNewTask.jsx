@@ -50,13 +50,18 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
     const [loadForSubmit, setLoadForSubmit] = useState(false)
 
     const toggleSelect = (userId) => {
-        setSelectedMembers((prev) =>
-            prev.includes(userId)
-                ? prev.filter((id) => id !== userId)
-                : [...prev, userId]
-        );
-    };
 
+        const updatedMembers = selectedMembers.includes(userId)
+            ? selectedMembers.filter((id) => id !== userId)
+            : [...selectedMembers, userId];
+
+        setSelectedMembers(updatedMembers);
+
+        setData((prev) => ({
+            ...prev,
+            assignTo: updatedMembers,
+        }));
+    };
 
     const { fetchTaskDetails } = useGlobalContext()
 
@@ -283,7 +288,7 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
                                     <p className='pb-1 select-none pointer-events-none'>select member</p>
                                 </div>
 
-                                <div onClick={() => setSelectMemberForMobile(true)} name='assignTo' className='w-[90%] sm:hidden flex bg-gray-400 h-8 text-[16px] outline-none p-2 mt-0.5 text-[#323232] rounded  gap-x-1 items-center justify-center cursor-pointer'>
+                                <div onClick={() => setSelectMemberForMobile(true)} className='w-[90%] sm:hidden flex bg-gray-400 h-8 text-[16px] outline-none p-2 mt-0.5 text-[#323232] rounded  gap-x-1 items-center justify-center cursor-pointer'>
                                     <AiOutlineSelect size={17} className='select-none pointer-events-none' />
                                     <p className='pb-1 select-none pointer-events-none'>select member</p>
                                 </div>
@@ -395,9 +400,6 @@ const CreateNewTask = ({ columnId, close, columnName }) => {
                             )
                         })
                     }
-
-
-
 
                 </div>
 

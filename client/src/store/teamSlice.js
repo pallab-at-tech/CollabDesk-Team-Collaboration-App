@@ -4,7 +4,8 @@ const initialValue = {
     name: "",
     description: "",
     organization_type: "",
-    member: []
+    member: [],
+    request_send : []
 }
 
 const teamSlice = createSlice({
@@ -16,6 +17,7 @@ const teamSlice = createSlice({
             state.description = action.payload?.description
             state.organization_type = action.payload?.organization_type
             state.member = [...action.payload?.member]
+            state.request_send = [...action.payload?.request_send]
         }
     }
 })

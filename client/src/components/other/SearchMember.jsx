@@ -10,6 +10,7 @@ import { RxAvatar } from "react-icons/rx";
 import { BsEmojiDizzy } from "react-icons/bs";
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useGlobalContext } from '../../provider/GlobalProvider';
 
 const SearchMember = ({ close }) => {
 
@@ -18,7 +19,10 @@ const SearchMember = ({ close }) => {
     const [allSearchData, setallSearchData] = useState([])
     const params = useParams()
 
+    const { fetchTeamDetails } = useGlobalContext()
+
     const user = useSelector(state => state.user)
+    const team = useSelector(state => state.team)
     const [storeRequestTemp, setStoreRequestTemp] = useState(new Set())
 
     const [activeButton, setActiveButton] = useState(new Set())
@@ -66,6 +70,7 @@ const SearchMember = ({ close }) => {
             })
 
             if (response?.data?.success) {
+                fetchTeamDetails(params?.team)
                 toast.success(response?.data?.message)
                 const newSet = new Set(storeRequestTemp)
                 newSet.add(userId)
@@ -105,7 +110,8 @@ const SearchMember = ({ close }) => {
                 toast.error(response?.data?.message)
             }
 
-            if (response?.data?.success){
+            if (response?.data?.success) {
+                fetchTeamDetails(params?.team)
                 toast.success(response?.data?.message)
                 const newSet = new Set(storeRequestTemp)
                 newSet.delete(userId)
@@ -121,14 +127,16 @@ const SearchMember = ({ close }) => {
         }
     }
 
+    console.log("teamming  dddd", team)
 
     useEffect(() => {
         const newSet = new Set()
-        user?.send?.forEach(element => {
-            element?.teamId === params?.team && newSet.add(element?.requestSendTo_id)
+        team?.request_send?.forEach(element => {
+            newSet.add(element?.sendTo_userId)
         });
         setStoreRequestTemp(newSet)
     }, [params?.team])
+
 
     useEffect(() => {
 
@@ -144,7 +152,6 @@ const SearchMember = ({ close }) => {
 
     }, [data])
 
-    console.log("searchUserFromServer", allSearchData)
 
 
     return (
@@ -188,7 +195,7 @@ const SearchMember = ({ close }) => {
 
                                             {
                                                 storeRequestTemp.has(val?._id) ? (
-                                                    <div onClick={()=>requestWithdrawByLeader(val?._id)} className={`w-fit bg-[#a22d19] text-white px-1 py-0.5 rounded ${activeButton.has(val?.userId) ? "pointer-events-none" : "cursor-pointer"}`}>withdraw</div>
+                                                    <div onClick={() => requestWithdrawByLeader(val?._id)} className={`w-fit bg-[#a22d19] text-white px-1 py-0.5 rounded ${activeButton.has(val?.userId) ? "pointer-events-none" : "cursor-pointer"}`}>withdraw</div>
                                                 ) : (
                                                     <div onClick={() => addMember(val?._id)} className={`text-center bg-[#19a220] text-white px-1 py-0.5 rounded cursor-pointer ${activeButton.has(val?.userId) ? "pointer-events-none" : "cursor-pointer"}`}>add</div>
                                                 )

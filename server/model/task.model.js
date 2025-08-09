@@ -10,13 +10,13 @@ const taskSchema = new mongoose.Schema({
         default: ""
     },
     assignby: {
-        type: mongoose.Schema.ObjectId,
-        ref: "user"
+        type: String,
+        default: ""
     },
     assignTo: [
         {
-            type: mongoose.Schema.ObjectId,
-            ref: "user"
+            type: String,
+            default: ""
         }
     ],
     status: {
@@ -51,7 +51,11 @@ const taskSchema = new mongoose.Schema({
             default: ""
         }
     ]
-})
+},
+    {
+        timestamps: true
+    }
+)
 
 
 const columnSchema = new mongoose.Schema({

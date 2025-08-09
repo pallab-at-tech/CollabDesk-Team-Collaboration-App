@@ -71,8 +71,6 @@ const GlobalProvider = ({ children }) => {
     const fetchTaskDetails = async (teamId) => {
         try {
 
-            console.log("fetchTaskDetails team id",teamId)
-
             const response = await Axios({
                 ...SummaryApi.task_details,
                 params : {

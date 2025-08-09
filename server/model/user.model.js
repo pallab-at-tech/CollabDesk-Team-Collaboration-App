@@ -41,24 +41,6 @@ const teamRequest = new mongoose.Schema({
 
 })
 
-const teamSend = new mongoose.Schema({
-    teamId: {
-        type: mongoose.Schema.ObjectId,
-        ref: "team"
-    },
-    teamName : {
-        type : String,
-        default : ""
-    },
-    requestSendTo_id : {
-        type : mongoose.Schema.ObjectId,
-        ref : "user"
-    },
-    requestSendTo_userId : {
-        type : String,
-        default : ""
-    }
-})
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -87,9 +69,6 @@ const userSchema = new mongoose.Schema({
     ],
     request : [
         teamRequest
-    ],
-    send : [
-        teamSend
     ],
     avatar: {
         type: String,

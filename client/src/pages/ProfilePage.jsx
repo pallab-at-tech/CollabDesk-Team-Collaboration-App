@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import profile from "../assets/profile.png"
 import { FiMessageSquare } from "react-icons/fi";
-import { FaEdit , FaEye } from "react-icons/fa";
-import { NavLink , Outlet , useParams , useLocation , useNavigate } from 'react-router-dom'
+import { FaEdit, FaEye } from "react-icons/fa";
+import { NavLink, Outlet, useParams, useLocation, useNavigate } from 'react-router-dom'
 import UnderLine from '../utils/UnderLine';
 import Axios from "../utils/Axios"
 import SummaryApi from '../common/SummaryApi';
@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { setUserLogout } from '../store/userSlice';
 import toast from 'react-hot-toast'
 import ProfileEdit from '../components/other/ProfileEdit';
+import { FaEnvelopeOpenText } from "react-icons/fa";
 
 const ProfilePage = () => {
 
@@ -19,6 +20,8 @@ const ProfilePage = () => {
   const location = useLocation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  
 
   const [path, setPath] = useState("")
 
@@ -30,7 +33,7 @@ const ProfilePage = () => {
 
   const [editAbout, setEditAbout] = useState(false)
 
-  console.log("profiee",user)
+  console.log("profiee", path)
 
 
   const handleLogout = async () => {
@@ -79,23 +82,23 @@ const ProfilePage = () => {
 
             <div className='flex items-center gap-x-3 mt-4 mb-1'>
               {
-                 user?.about ? (
+                user?.about ? (
                   <p className='font-bold bg-[#179709] w-fit px-1.5 py-0.5 rounded text-white'>About</p>
-                 ) : (
-                  <p onClick={()=>setEditAbout(true)} className='font-bold bg-[#179709] w-fit px-1.5 py-0.5 rounded text-white cursor-pointer'>add about</p>
-                 )
+                ) : (
+                  <p onClick={() => setEditAbout(true)} className='font-bold bg-[#179709] w-fit px-1.5 py-0.5 rounded text-white cursor-pointer'>add about</p>
+                )
               }
-              
-              <FaEdit onClick={()=>setEditAbout(true)} size={22} className={`text-[#484848] ${user?.about ? "cursor-pointer" : "pointer-events-none"} opacity-[70%]`} title='Edit about' />
+
+              <FaEdit onClick={() => setEditAbout(true)} size={22} className={`text-[#484848] ${user?.about ? "cursor-pointer" : "pointer-events-none"} opacity-[70%]`} title='Edit about' />
 
             </div>
 
             {
               user?.about && (
-                 <p>{user?.about}</p>
-              ) 
+                <p>{user?.about}</p>
+              )
             }
-           
+
           </div>
 
         </div>
@@ -117,19 +120,18 @@ const ProfilePage = () => {
 
           <div className='pt-[35px] flex items-center gap-x-10 pb-[10px] '>
 
-            <NavLink to={`/profile/${params?.user}`} className='flex items-center gap-x-1 cursor-pointer relative'>
+            <NavLink to={`/profile/${params?.user}`} className={({isActive})=>`flex items-center transition-colors duration-75 ease-in-out gap-x-1 cursor-pointer relative px-2 py-0.5 ${path !== "request" && "bg-green-600  rounded"}`}>
 
               <FaEye size={20} />
               <p>Timeline</p>
 
-              <div className='w-fit absolute -bottom-[15px] right-0 left-[24px]'>
-                {/* {
-                  path !== "edit" && (
-                    <UnderLine size={'55px'} />
-                  )
-                } */}
+            </NavLink>
 
-              </div>
+            <NavLink to={`/profile/${params?.user}/request`}
+              className={({ isActive }) => `flex items-center transition-colors duration-75 ease-in-out gap-x-1 cursor-pointer relative px-2 py-0.5 ${path === "request" && "bg-green-600  rounded"}`}
+            >
+              <FaEnvelopeOpenText />
+              <p>Inbox</p>
 
             </NavLink>
 
@@ -137,14 +139,6 @@ const ProfilePage = () => {
 
               <FaEdit size={20} />
               <p>Edit profile</p>
-
-              <div className='w-fit absolute -bottom-[15px] right-0 left-[24px]'>
-                {
-                  path === "edit" && (
-                    <UnderLine size={'74px'} />
-                  )
-                }
-              </div>
 
             </NavLink>
 
@@ -168,7 +162,7 @@ const ProfilePage = () => {
 
       {
         editAbout && (
-          <ProfileEdit close={()=>setEditAbout(false)}/>
+          <ProfileEdit close={() => setEditAbout(false)} />
         )
       }
 

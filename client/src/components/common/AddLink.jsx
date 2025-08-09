@@ -36,7 +36,7 @@ const AddLink = ({ close, data, setLinkData }) => {
                 {/* Multiple rows for name + URL */}
                 <div className='flex flex-col gap-4 max-h-[300px] overflow-y-auto pr-2'>
                     {links.map((link, index) => (
-                        <div key={index} className='flex flex-col gap-2'>
+                        <div key={index} className='flex flex-col gap-2 my-2 ml-1'>
                             <input
                                 type="text"
                                 placeholder="Name"
