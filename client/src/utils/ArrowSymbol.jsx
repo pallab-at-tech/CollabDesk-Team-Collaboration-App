@@ -2,11 +2,11 @@ import React from 'react'
 
 const ArrowSymbol = () => {
     return (
-        <div class="arrow-container">
-            <div class="line horizontal"></div>
-            <div class="line vertical"></div>
-            <div class="line horizontal second"></div>
-            <div class="arrow-head"></div>
+        <div className="arrow-container">
+            <div className="line horizontal"></div>
+            <div className="line vertical"></div>
+            <div className="line horizontal second"></div>
+            <div className="arrow-head"></div>
         </div>
     )
 }

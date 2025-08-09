@@ -157,7 +157,7 @@ const ColumnItem = ({ val, isOpen, setColumnSetting }) => {
                             {
                                 val?.tasks?.map((val, idx) => {
                                     return (
-                                        <div className='flex my-4 gap-0 items-center justify-start relative'>
+                                        <div key={`task-assign-${idx}`} className='flex my-4 gap-0 items-center justify-start relative'>
 
                                             <div className='absolute top-2 left-2'>
                                                 <ArrowSymbol />

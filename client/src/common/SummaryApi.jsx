@@ -68,6 +68,14 @@ const SummaryApi = {
     request_acceptBY_user : {
         url : "/api/user/request-accept",
         method : "post"
+    },
+    task_column_rename : {
+        url : "/api/task/task-column-rename",
+        method : "post"
+    },
+    task_column_delete : {
+        url : "/api/task/task-delete",
+        method : "post"
     }
 }
 
