@@ -60,6 +60,14 @@ const SummaryApi = {
     new_task_create : {
         url : "/api/task/task-create",
         method : "post"
+    },
+    request_cancelBY_user : {
+        url : "/api/user/request-reject",
+        method : "post"
+    },
+    request_acceptBY_user : {
+        url : "/api/user/request-accept",
+        method : "post"
     }
 }
 

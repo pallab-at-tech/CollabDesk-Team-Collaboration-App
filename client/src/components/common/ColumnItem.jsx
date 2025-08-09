@@ -111,8 +111,6 @@ const ColumnItem = ({ val, isOpen, setColumnSetting }) => {
     const [taskOpen, setTaskOpen] = useState(true)
 
 
-    console.log("value", val)
-
 
     return (
         <section>
