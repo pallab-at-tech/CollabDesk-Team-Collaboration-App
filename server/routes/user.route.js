@@ -1,5 +1,5 @@
 import express from 'express'
-import { updateUserDetailsController, userDetailsController, userEmailVerificationController, userForgotPassword, userLoginController, userLogOutController, userRefressingTokenController, userRegisterController, userSearchController, userVerifyForgotPasswordController } from '../controller/user.controller.js'
+import { updateUserDetailsController, userDetailsController, userEmailVerificationController, userForgotPassword, userLoginController, userLogOutController, userRefressingTokenController, userRegisterController, userRequestCancelController, userRequestConfirmController, userSearchController, userVerifyForgotPasswordController } from '../controller/user.controller.js'
 import auth from '../middleware/auth.js'
 
 
@@ -15,5 +15,7 @@ userRoute.post("/refresh-token",userRefressingTokenController)
 userRoute.get("/user-details",auth,userDetailsController)
 userRoute.get("/user-search",auth,userSearchController)
 userRoute.post("/user-update",auth,updateUserDetailsController)
+userRoute.post("/request-reject",auth,userRequestCancelController)
+userRoute.post("/request-accept",auth,userRequestConfirmController)
 
 export default userRoute

@@ -10,6 +10,7 @@ import generateRefreshToken from '../utils/generateRefreshToken.js'
 import generateOTP from '../utils/generateOTP.js'
 import sendEmail from '../utils/sendEmail.js'
 import verifyEmailTemplate from '../utils/verifyEmailTemplate.js'
+import teamModel from '../model/team.model.js'
 
 
 export const userRegisterController = async (request, response) => {
@@ -407,7 +408,7 @@ export const userDetailsController = async (request, response) => {
         })
 
     } catch (error) {
-        return response.status(400).json({
+        return response.status(500).json({
             message: error.message || error,
             success: false,
             error: true
@@ -454,7 +455,7 @@ export const userSearchController = async (request, response) => {
         })
 
     } catch (error) {
-        return response.status(400).json({
+        return response.status(500).json({
             message: error.message || error,
             success: false,
             error: true
@@ -462,31 +463,177 @@ export const userSearchController = async (request, response) => {
     }
 }
 
-export const updateUserDetailsController = async (request , response) =>{
+export const updateUserDetailsController = async (request, response) => {
     try {
 
         const userId = request.userId
-        const {name , about , avatar} = request.body || {}
+        const { name, about, avatar } = request.body || {}
 
-        console.log("about",about)
+        console.log("about", about)
 
         const upadateUser = await userModel.findByIdAndUpdate(
             userId,
             {
-                ...(name && {name : name}),
-                ...(about && {about : about}),
-                ...(avatar && {avatar : avatar})
+                ...(name && { name: name }),
+                ...(about && { about: about }),
+                ...(avatar && { avatar: avatar })
             }
         )
 
         return response.json({
-            message : 'Update successfully',
+            message: 'Update successfully',
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            success: false,
+            error: true
+        })
+    }
+}
+
+export const userRequestConfirmController = async (request, response) => {
+    try {
+        const userId = request.userId
+        const { teamId, teamName, requestedBy_id, requestedBy_userId } = request.body || {}
+
+        if (!teamId) {
+            return response.status(400).json({
+                message: 'team Id required',
+                error: true,
+                success: false
+            })
+        }
+
+        const user = await userModel.findById(userId)
+
+        if (!user) {
+            return response.status(400).json({
+                message: 'User not found !',
+                error: true,
+                success: false
+            })
+        }
+
+        const team = await teamModel.findById(teamId)
+
+        if (!team) {
+            return response.status(400).json({
+                message: 'Team not found !',
+                error: true,
+                success: false
+            })
+        }
+
+        user.request.pull({
+            teamId: teamId,
+            teamName: teamName,
+            requestedBy_id: requestedBy_id,
+            requestedBy_userId: requestedBy_userId
+        })
+
+        user.roles.push({
+            teamId: teamId,
+            name: team.name,
+            organization_type: team.organization_type,
+            role: "MEMBER"
+        })
+
+        await user.save()
+
+        team.request_send.pull({
+            sendTo_userId: userId,
+            sendTo_userName: user.userId,
+            sendBy_userId: requestedBy_id,
+            sendBy_userName: requestedBy_userId
+        })
+
+        team.member.push({
+            userId: userId,
+            userName: user.userId,
+            role: "MEMBER"
+        })
+
+        await team.save()
+
+        return response.json({
+            message: `you are now the member of ${team.name}`,
+            error: false,
+            success: true
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error,
+            success: false,
+            error: true
+        })
+    }
+}
+
+export const userRequestCancelController = async (request, response) => {
+    try {
+
+        const userId = request.userId
+        const { teamId, teamName, requestedBy_id, requestedBy_userId } = request.body || {}
+
+        if (!teamId) {
+            return response.status(400).json({
+                message: 'team Id required',
+                error: true,
+                success: false
+            })
+        }
+
+        const user = await userModel.findById(userId)
+
+        if (!user) {
+            return response.status(400).json({
+                message: 'User not found !',
+                error: true,
+                success: false
+            })
+        }
+
+        const team = await teamModel.findById(teamId)
+
+        if (!team) {
+            return response.status(400).json({
+                message: 'Team not found !',
+                error: true,
+                success: false
+            })
+        }
+
+        user.request.pull({
+            teamId: teamId,
+            teamName: teamName,
+            requestedBy_id: requestedBy_id,
+            requestedBy_userId: requestedBy_userId
+        })
+
+        await user.save()
+
+        team.request_send.pull({
+            sendTo_userId: userId,
+            sendTo_userName: user.userId,
+            sendBy_userId: requestedBy_id,
+            sendBy_userName: requestedBy_userId
+        })
+
+        await team.save()
+
+        return response.json({
+            message : "request pull out successfully",
             error : false,
             success : true
         })
-        
+
     } catch (error) {
-        return response.status(400).json({
+        return response.status(500).json({
             message: error.message || error,
             success: false,
             error: true
