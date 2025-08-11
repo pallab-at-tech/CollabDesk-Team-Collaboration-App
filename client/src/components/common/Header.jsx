@@ -4,6 +4,7 @@ import { useGlobalContext } from "../../provider/GlobalProvider"
 import { IoIosNotifications } from "react-icons/io";
 import { useSelector } from 'react-redux';
 import { CgProfile } from "react-icons/cg";
+import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 
 
 const Header = () => {
@@ -78,6 +79,10 @@ const Header = () => {
                                     </>
                                 )
                             }
+
+                            <Link to={"/chat"}>
+                                <IoChatbubbleEllipsesSharp size={22} className='text-white'/>
+                            </Link>
 
                         </>
                     ) : (

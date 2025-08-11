@@ -1,0 +1,127 @@
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { CgProfile } from "react-icons/cg";
+import { RiChatSmile2Line } from "react-icons/ri";
+import { HiOutlineUserAdd } from "react-icons/hi";
+import SearchNewMember from './SearchNewMember';
+import { useGlobalContext } from '../provider/GlobalProvider';
+import Axios from '../utils/Axios';
+import SummaryApi from '../common/SummaryApi';
+import { setMessageDetails } from '../store/chatSlice';
+import { useDispatch } from 'react-redux';
+import { FiArrowUpLeft } from 'react-icons/fi'
+
+const ChatPage = () => {
+
+    const user = useSelector(state => state.user)
+    const chat_details = useSelector(state => state.chat?.all_message)
+
+    const dispatch = useDispatch()
+
+    const [openSearchForNewMember, setOpenSearchForNewMember] = useState(false)
+
+    const { socketConnection } = useGlobalContext()
+
+    useEffect(() => {
+        (async () => {
+            try {
+
+                const response = await Axios({
+                    ...SummaryApi.get_allChat_details
+                })
+
+                const { data: responseData } = response
+
+                if (responseData.success) {
+                    dispatch(setMessageDetails({all_message : responseData?.data}))
+                }
+
+            } catch (error) {
+                console.log("error from chatPage", error)
+            }
+        })();
+    }, [])
+
+
+    console.log("user from chat", user)
+    console.log("chat details for user", chat_details)
+
+    return (
+        <section className='min-h-[calc(100vh-60px)] '>
+
+            <div className='grid grid-cols-[26%_1fr]'>
+
+                <div className='h-[calc(100vh-60px)] bg-[#21222b] text-[#f4f4f4]  overflow-y-auto scroll-smooth hide-scrollbar border-r border-[#c1c1c17e] ring-1 ring-[#c1c1c17e] relative' style={{ willChange: 'transform' }}>
+
+                    <div className='min-h-[65px] flex justify-between items-center px-4 max-h-[65px] bg-[#21222b] shadow-md shadow-[#57575765] sticky top-0 z-10'>
+
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#2e2f38]">
+                                <CgProfile size={24} className="text-gray-300" />
+                            </div>
+                            <p className="text-sm font-medium truncate max-w-[15ch]">{`${user?.name}` || "Guest User"}</p>
+                        </div>
+
+                        <div className="flex items-center bg-[#2e2f38] rounded-full px-3 py-1.5 w-[140px]">
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                className="bg-transparent outline-none text-sm placeholder-gray-400 w-full"
+                            />
+                        </div>
+
+                        <div>
+                            <HiOutlineUserAdd onClick={() => setOpenSearchForNewMember(true)} size={26} className='cursor-pointer' title='find new member' />
+                        </div>
+
+                    </div>
+
+
+                    {
+                        chat_details?.length === 0 && (
+                            <div className='h-full w-full flex flex-col gap-2 justify-center items-center  text-[#8c8c8c] pb-[120px]'>
+                                <p>Explore user to start a conversation with.</p>
+                                <FiArrowUpLeft size={50} /> 
+                            </div>
+                        )
+                    }
+
+
+                    {/* Scrollable Content */}
+                    {/* <div className="p-3 space-y-2">
+                        {[...Array(50)].map((_, i) => (
+                            <div key={i} className="p-2 rounded-md bg-[#2e2f38]">Item {i + 1}</div>
+                        ))}
+                    </div> */}
+
+
+                </div>
+
+                <div className='h-[calc(100vh-60px)] overflow-y-auto flex items-center justify-center narrow-scrollbar bg-[#282932]' style={{ willChange: 'transform' }}>
+
+                    <div className='select-none'>
+
+                        <p className='text-[#979797]'>Connect in confidence, knowing your messages</p>
+                        <p className='text-[#979797]'> are encrypted and visible only to trusted people.</p>
+
+                        <div className='text-[#979797] flex items-center justify-center pt-1'>
+                            <RiChatSmile2Line size={26} />
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {
+                openSearchForNewMember && (
+                    <SearchNewMember close={() => setOpenSearchForNewMember(false)} />
+                )
+            }
+
+        </section>
+    )
+}
+
+export default ChatPage

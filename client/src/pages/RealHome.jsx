@@ -5,13 +5,14 @@ import { MdOutlinePostAdd } from "react-icons/md";
 import { MdFullscreen } from "react-icons/md";
 import { RiEmojiStickerLine } from "react-icons/ri";
 import CreateTeam from '../components/other/CreateTeam';
+import { Outlet } from 'react-router-dom';
 
 const RealHome = () => {
 
     const [openCreateTeam, setOpenCreateTeam] = useState(false)
 
     return (
-        <section className='bg-gradient-to-b from-[#1b1c29] to-[#21222b] min-h-[calc(100vh-60px)]  grid lg-real:grid-cols-2 place-items-center'>
+        <section className='bg-gradient-to-b from-[#1b1c29] to-[#21222b] min-h-[calc(100vh-60px)]  grid lg-real:grid-cols-[1fr_1fr] place-items-center'>
 
             <div className='flex flex-col gap-2  text-A-off-color text-3xl font-semibold'>
 
@@ -45,7 +46,7 @@ const RealHome = () => {
                         <RiEmojiStickerLine size={22}/>
                     </div>
                 </div>
-                
+
             </div>
 
 

@@ -76,6 +76,10 @@ const SummaryApi = {
     task_column_delete : {
         url : "/api/task/task-delete",
         method : "post"
+    },
+    get_allChat_details : {
+        url : "/api/chat/get-all-participants-details",
+        method : "get"
     }
 }
 

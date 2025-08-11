@@ -12,6 +12,7 @@ import { setUserLogout } from '../store/userSlice';
 import toast from 'react-hot-toast'
 import ProfileEdit from '../components/other/ProfileEdit';
 import { FaEnvelopeOpenText } from "react-icons/fa";
+import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 
 const ProfilePage = () => {
 
@@ -21,7 +22,7 @@ const ProfilePage = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  
+
 
   const [path, setPath] = useState("")
 
@@ -120,7 +121,7 @@ const ProfilePage = () => {
 
           <div className='pt-[35px] flex items-center gap-x-10 pb-[10px] '>
 
-            <NavLink to={`/profile/${params?.user}`} className={({isActive})=>`flex items-center transition-colors duration-75 ease-in-out gap-x-1 cursor-pointer relative px-2 py-0.5 ${path !== "request" && "bg-green-600  rounded"}`}>
+            <NavLink to={`/profile/${params?.user}`} className={({ isActive }) => `flex items-center transition-colors duration-75 ease-in-out gap-x-1 cursor-pointer relative px-2 py-0.5 ${path !== "request" && "bg-green-600  rounded"}`}>
 
               <FaEye size={20} />
               <p>Timeline</p>
@@ -135,17 +136,17 @@ const ProfilePage = () => {
 
             </NavLink>
 
-            {/* <NavLink to={`/profile/${params?.user}/edit`} className='flex items-center gap-x-1 cursor-pointer relative'>
+            {/* <NavLink to={`/profile/${params?.user}/chat`}
+              className={`flex items-center transition-colors duration-75 ease-in-out gap-x-1 cursor-pointer relative px-2 py-0.5`}
+            >
+              <IoChatbubbleEllipsesSharp />
+              <p>Chat</p>
+            </NavLink> */}
 
-              <FaEdit size={20} />
-              <p>Edit profile</p>
-
-            </NavLink>
-
-            <div className='flex items-center gap-x-1 cursor-pointer'>
+            {/* <div className='flex items-center gap-x-1 cursor-pointer'>
               <FiMessageSquare size={20} />
               <p className='pb-1'>Message</p>
-            </div> */}
+            </div>  */}
 
           </div>
 

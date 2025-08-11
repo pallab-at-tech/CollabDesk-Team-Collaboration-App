@@ -1,19 +1,24 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Axios from '../utils/Axios'
 import SummaryApi from '../common/SummaryApi'
-import { setUserDetails } from '../store/userSlice'
+import { setUserDetails, onlineUserDetails } from '../store/userSlice'
 import { setTeamDetails } from '../store/teamSlice'
 import { setTask } from '../store/taskSlice'
 import toast from 'react-hot-toast'
+import { io } from 'socket.io-client'
 
 export const GlobalContext = createContext(null)
 export const useGlobalContext = () => useContext(GlobalContext)
+
+
 
 const GlobalProvider = ({ children }) => {
 
     const user = useSelector(state => state.user)
     const dispatch = useDispatch()
+    const [socketConnection, setSocketConnection] = useState(null)
+
 
     const fetchUserAllDetails = async () => {
         try {
@@ -73,8 +78,8 @@ const GlobalProvider = ({ children }) => {
 
             const response = await Axios({
                 ...SummaryApi.task_details,
-                params : {
-                    teamId : teamId
+                params: {
+                    teamId: teamId
                 }
             })
 
@@ -97,15 +102,43 @@ const GlobalProvider = ({ children }) => {
         fetchUserAllDetails();
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchIsLogin()
-    },[fetchUserAllDetails])
+    }, [fetchUserAllDetails])
+
+
+    // socket configure in client site
+    useEffect(() => {
+
+        if (user?._id) {
+
+            console.log("testing user id ", user?._id)
+
+            const socket = io(import.meta.env.VITE_BACKEND_URL, {
+                withCredentials: true
+            });
+
+            setSocketConnection(socket)
+
+            socket.emit("join_room", user._id);
+
+            socket.on("online_user", (onlineUsers) => {
+                dispatch(onlineUserDetails({ onlineUser: onlineUsers }));
+            });
+
+            // Cleanup on unmount
+            return () => {
+                socket.off("online_user");
+                socket.disconnect();
+            };
+        }
+
+    }, [user?._id])
 
     console.log("user from global provider", user)
 
-
     return (
-        <GlobalContext.Provider value={{ fetchUserAllDetails, fetchIsLogin, fetchTeamDetails, fetchTaskDetails }}>
+        <GlobalContext.Provider value={{ fetchUserAllDetails, fetchIsLogin, fetchTeamDetails, fetchTaskDetails , socketConnection  }}>
             {
                 children
             }

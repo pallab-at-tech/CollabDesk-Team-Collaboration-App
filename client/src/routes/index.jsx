@@ -12,6 +12,7 @@ import Timeline from '../pages/Timeline'
 import EditProfile from '../pages/EditProfile'
 import CollabBoard from "../pages/CollabBoard"
 import ProfileTeamRequest from '../pages/ProfileTeamRequest'
+import ChatPage from '../pages/ChatPage'
 
 const router = createBrowserRouter([
     {
@@ -61,10 +62,18 @@ const router = createBrowserRouter([
                         element : <ProfileTeamRequest/>
                     },
                     {
+                        path : "/profile/:user/chat",
+                        element : <ChatPage/>
+                    },
+                    {
                         path : '/profile/:user/edit',
                         element : <EditProfile/>
                     }
                 ]
+            },
+            {
+                path : "/chat",
+                element : <ChatPage/>
             }
         ]
     },
