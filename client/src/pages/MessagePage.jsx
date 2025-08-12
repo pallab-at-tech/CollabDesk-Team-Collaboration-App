@@ -11,6 +11,9 @@ import SummaryApi from '../common/SummaryApi';
 import { updateConversationWithNewMessage } from '../store/chatSlice';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { FaFileAlt } from "react-icons/fa";
+import { RiFolderVideoFill } from "react-icons/ri";
+import { IoImage } from "react-icons/io5";
 
 const MessagePage = () => {
 
@@ -25,6 +28,8 @@ const MessagePage = () => {
 
 
     const [messages, setMessages] = useState([])
+    const [openAttach, setOpenAttach] = useState(false)
+    const attachRef = useRef(null)
 
     const { socketConnection } = useGlobalContext()
 
@@ -108,6 +113,19 @@ const MessagePage = () => {
     }, [messages]);
 
 
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (attachRef.current && !attachRef.current.contains(event.target)) {
+                setOpenAttach(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+
     console.log("all state upate value from redux", chat_details)
     console.log("state updated message", messages)
 
@@ -134,7 +152,7 @@ const MessagePage = () => {
                 </div>
             </div>
 
-            <div className='h-full overflow-y-auto px-2 flex flex-col gap-2.5 py-4 chat-scrollbar' style={{ willChange: 'transform' }}>
+            <div className='h-full overflow-y-auto px-2.5 flex flex-col gap-2.5 py-4 chat-scrollbar' style={{ willChange: 'transform' }}>
                 {
                     Array.isArray(messages) && messages.map((value, index) => {
 
@@ -150,7 +168,7 @@ const MessagePage = () => {
                         })
 
                         return (
-                            <div key={`new key-${index}`} className={`bg-white w-fit text-base rounded text-neutral-900  px-1 py-0.5  ${isSelfMessage ? "self-end" : "self-start"}`}>
+                            <div key={`new key-${index}`} className={`bg-[#f1f1f1] w-fit text-base rounded text-blue-950  px-1 py-0.5  ${isSelfMessage ? "self-end" : "self-start"}`}>
                                 <p className='font-semibold'>
                                     {value?.text}
                                 </p>
@@ -169,8 +187,31 @@ const MessagePage = () => {
 
             <div className='bg-[#1f2029] w-full rounded-t-md grid grid-cols-[100px_1fr_100px] items-center text-white shadow-md shadow-[#154174]'>
 
-                <div className='flex items-center justify-center cursor-pointer'>
-                    <MdAttachment size={29} />
+                <div className='flex items-center justify-center relative'>
+                    <MdAttachment size={29} onClick={() => setOpenAttach(true)} className='cursor-pointer'/>
+
+                    {
+                        openAttach && (
+                            <div ref={attachRef} className='bg-[#f1f1f1] text-blue-950 absolute bottom-10 left-8 min-h-[110px] min-w-[100px] flex flex-col items-start px-3.5 gap-2 py-1.5 rounded-t-2xl rounded-r-2xl rounded-l-md'>
+
+                                <div className='flex gap-4 items-center justify-center'>
+                                    <div className='cursor-pointer'>
+                                        <IoImage size={42} />
+                                        <p>image</p>
+                                    </div>
+                                    <div className='cursor-pointer'>
+                                        <RiFolderVideoFill size={42} />
+                                        <p>video</p>
+                                    </div>
+                                </div>
+
+                                <div className='flex flex-col items-center cursor-pointer'>
+                                    <FaFileAlt size={42} />
+                                    <p>file</p>
+                                </div>
+                            </div>
+                        )
+                    }
                 </div>
 
                 <div>
@@ -181,7 +222,7 @@ const MessagePage = () => {
                         onKeyDown={(e) => {
                             if (e.key === "Enter" && !e.shiftKey) {
                                 e.preventDefault();
-                                handleOnClick(); 
+                                handleOnClick();
                             }
                         }}
 
