@@ -3,6 +3,7 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import dotenv from 'dotenv'
 import { conversationModel, messageModel } from '../model/chat.model.js'
+import userModel from '../model/user.model.js'
 dotenv.config()
 
 
@@ -35,8 +36,56 @@ io.on("connection", async (socket) => {
 
 
     //get all message info
-    socket.on("all_message_info", (userId) => {
-        
+    socket.on("all_message_info", async (userId) => {
+        try {
+
+            const conversation = await conversationModel.find({
+                participants: userId,
+            }).lean()
+
+            const otherUserId = new Set()
+
+            conversation.forEach(data => {
+                data.forEach(d => {
+                    if (d.toString() !== userId.toString()) {
+                        otherUserId.add(d.toString())
+                    }
+                })
+            })
+
+            const users = await userModel.find({
+                _id: { $in: Array.from(otherUserId) }
+            }).select("_id name avatar email")
+
+            socket.emit("get_message_info",users)
+
+            console.log("user details for message",users)
+
+        } catch (error) {
+            console.log("error for get message", error)
+        }
+    })
+
+
+    // message to new member
+    socket.on("messageTo_new_member", async (data) => {
+
+        const { receiverId, senderId } = data
+
+        let conversation = await conversationModel.findOne({
+            group_type: "PRIVATE",
+            participants: { $all: [senderId, receiverId], $size: 2 }
+        })
+
+        if (!conversation) {
+            conversation = await conversationModel.create({
+                group_type: "PRIVATE",
+                participants: [senderId, receiverId],
+                messages: []
+            })
+        }
+
+        await conversation.save()
     })
 
     // send message
@@ -49,22 +98,22 @@ io.on("connection", async (socket) => {
                 participants: { $all: [senderId, receiverId], $size: 2 }
             });
 
-            if(!conversation){
+            if (!conversation) {
                 conversation = await conversationModel.create({
-                    group_type : "PRIVATE",
-                    participants : [senderId,receiverId],
-                    messages : []
+                    group_type: "PRIVATE",
+                    participants: [senderId, receiverId],
+                    messages: []
                 })
             }
 
             const newMessage = await messageModel.create({
-                senderId : senderId,
-                recieverId : receiverId,
-                text : text,
-                image : image,
-                video : video,
-                other_fileUrl_or_external_link : other_fileUrl_or_external_link,
-                readBy : [senderId]
+                senderId: senderId,
+                recieverId: receiverId,
+                text: text,
+                image: image,
+                video: video,
+                other_fileUrl_or_external_link: other_fileUrl_or_external_link,
+                readBy: [senderId]
             })
 
             conversation.messages.push(newMessage._id)

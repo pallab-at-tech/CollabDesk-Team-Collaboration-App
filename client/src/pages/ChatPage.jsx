@@ -10,6 +10,9 @@ import SummaryApi from '../common/SummaryApi';
 import { setMessageDetails } from '../store/chatSlice';
 import { useDispatch } from 'react-redux';
 import { FiArrowUpLeft } from 'react-icons/fi'
+import { RxAvatar } from 'react-icons/rx';
+import { Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 const ChatPage = () => {
 
@@ -19,6 +22,8 @@ const ChatPage = () => {
     const dispatch = useDispatch()
 
     const [openSearchForNewMember, setOpenSearchForNewMember] = useState(false)
+
+    const [messageData, setMessageData] = useState(null)
 
     const { socketConnection } = useGlobalContext()
 
@@ -32,8 +37,10 @@ const ChatPage = () => {
 
                 const { data: responseData } = response
 
+                console.log("response testing", responseData)
+
                 if (responseData.success) {
-                    dispatch(setMessageDetails({all_message : responseData?.data}))
+                    dispatch(setMessageDetails({ all_message: responseData?.data }))
                 }
 
             } catch (error) {
@@ -43,7 +50,7 @@ const ChatPage = () => {
     }, [])
 
 
-    console.log("user from chat", user)
+    console.log("state check for messageData", messageData)
     console.log("chat details for user", chat_details)
 
     return (
@@ -78,36 +85,62 @@ const ChatPage = () => {
 
 
                     {
-                        chat_details?.length === 0 && (
+                        chat_details?.length === 0 ? (
                             <div className='h-full w-full flex flex-col gap-2 justify-center items-center  text-[#8c8c8c] pb-[120px]'>
                                 <p>Explore user to start a conversation with.</p>
-                                <FiArrowUpLeft size={50} /> 
+                                <FiArrowUpLeft size={50} />
+                            </div>
+                        ) : (
+                            <div className="p-3 space-y-2">
+                                {
+                                    chat_details?.map((v, i) => { 
+                                        return (
+                                            <Link to={`/chat/${v?._id}`} key={v?._id} onClick={() => {
+                                                setMessageData(v?._id)
+                                            }}
+                                                className="rounded-lg bg-[#205b67] hover:bg-[#2e4d66] transition-colors flex gap-3 items-center px-4 py-2.5 cursor-pointer"
+                                            >
+                                                <RxAvatar
+                                                    size={38}
+                                                    className="text-gray-300 border border-gray-500 rounded-full p-1"
+                                                />
+
+                                                <div className='flex flex-col leading-tight text-sm text-gray-200'>
+                                                    <p className="font-medium text-[16px] text-white max-w-[24ch] truncate">
+                                                        {v?.otherUser?.name}
+                                                    </p>
+                                                    <p className="text-[12px] text-gray-400 max-w-[24ch] truncate">
+                                                        {v?.otherUser?.userId}
+                                                    </p>
+                                                </div>
+                                            </Link>
+                                        )
+                                    })
+                                }
                             </div>
                         )
                     }
 
 
-                    {/* Scrollable Content */}
-                    {/* <div className="p-3 space-y-2">
-                        {[...Array(50)].map((_, i) => (
-                            <div key={i} className="p-2 rounded-md bg-[#2e2f38]">Item {i + 1}</div>
-                        ))}
-                    </div> */}
-
-
                 </div>
 
-                <div className='h-[calc(100vh-60px)] overflow-y-auto flex items-center justify-center narrow-scrollbar bg-[#282932]' style={{ willChange: 'transform' }}>
+                <div className={`h-[calc(100vh-60px)] overflow-y-auto ${messageData === null && "flex items-center justify-center"} narrow-scrollbar bg-[#282932]`} style={{ willChange: 'transform' }}>
 
-                    <div className='select-none'>
+                    {
+                        messageData === null ? (
+                            <div className='select-none'>
 
-                        <p className='text-[#979797]'>Connect in confidence, knowing your messages</p>
-                        <p className='text-[#979797]'> are encrypted and visible only to trusted people.</p>
+                                <p className='text-[#979797]'>Connect in confidence, knowing your messages</p>
+                                <p className='text-[#979797]'> are encrypted and visible only to trusted people.</p>
 
-                        <div className='text-[#979797] flex items-center justify-center pt-1'>
-                            <RiChatSmile2Line size={26} />
-                        </div>
-                    </div>
+                                <div className='text-[#979797] flex items-center justify-center pt-1'>
+                                    <RiChatSmile2Line size={26} />
+                                </div>
+                            </div>
+                        ) : (
+                            <Outlet/>
+                        )
+                    }
 
                 </div>
 
@@ -116,7 +149,7 @@ const ChatPage = () => {
 
             {
                 openSearchForNewMember && (
-                    <SearchNewMember close={() => setOpenSearchForNewMember(false)} />
+                    <SearchNewMember close={() => setOpenSearchForNewMember(false)}/>
                 )
             }
 

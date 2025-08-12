@@ -4,6 +4,9 @@ import Axios from '../utils/Axios'
 import SummaryApi from '../common/SummaryApi'
 import { RxAvatar } from 'react-icons/rx'
 import { useSelector } from 'react-redux'
+import { useGlobalContext } from '../provider/GlobalProvider'
+import { useDispatch } from 'react-redux'
+import { addMessageDetails } from '../store/chatSlice'
 
 const SearchNewMember = ({ close }) => {
 
@@ -11,8 +14,12 @@ const SearchNewMember = ({ close }) => {
     const [searchTerm, setSearchTerm] = useState("")
     const [allSearchData, setallSearchData] = useState([])
 
+    const { socketConnection } = useGlobalContext()
 
     const userId = useSelector(state => state.user?.userId)
+    const dispatch = useDispatch()
+
+  
 
     const searchUserFromServer = async (inputData) => {
 
@@ -36,6 +43,14 @@ const SearchNewMember = ({ close }) => {
         } catch (error) {
             setallSearchData(["error"])
             console.log("error from searchUserFromServer", error)
+        }
+    }
+
+    const handleOnclickSearchData = async () => {
+        try {
+            
+        } catch (error) {
+            console.log("error from handleOnclickSearchData",error)
         }
     }
 
@@ -87,6 +102,10 @@ const SearchNewMember = ({ close }) => {
                                         key={`new member - ${idx}`}
                                         className="flex items-center gap-3 p-2 rounded-md bg-[#2a2a32] hover:bg-[#3b3b46] transition-colors cursor-pointer my-1.5"
                                     >
+
+                                        {
+                                            console.log("val checking", val)
+                                        }
                                         <RxAvatar
                                             size={36}
                                             className="text-gray-300 border border-gray-500 rounded-full p-1"
@@ -109,7 +128,7 @@ const SearchNewMember = ({ close }) => {
                             <p className="text-gray-400 text-sm p-2">No results found</p>
                         )}
 
-                        
+
                     </div>
 
                 </div>

@@ -13,6 +13,7 @@ import EditProfile from '../pages/EditProfile'
 import CollabBoard from "../pages/CollabBoard"
 import ProfileTeamRequest from '../pages/ProfileTeamRequest'
 import ChatPage from '../pages/ChatPage'
+import MessagePage from '../pages/MessagePage'
 
 const router = createBrowserRouter([
     {
@@ -73,7 +74,13 @@ const router = createBrowserRouter([
             },
             {
                 path : "/chat",
-                element : <ChatPage/>
+                element : <ChatPage/>,
+                children : [
+                    {
+                        path : "/chat/:conversation",
+                        element : <MessagePage/>
+                    }
+                ]
             }
         ]
     },

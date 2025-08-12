@@ -17,23 +17,33 @@ export const getPreviousChatUsers = async (request, response) => {
             })
         }
 
-        const otherUserId = new Set()
+        const otherUserIds = [];
 
-        conversation.forEach(data => {
-            data.forEach(d => {
-                if (d.toString() !== userId.toString()) {
-                    otherUserId.add(d.toString())
+        conversation.forEach(conv => {
+            conv.participants.forEach(pId => {
+                if (pId.toString() !== userId.toString()) {
+                    otherUserIds.push(pId.toString());
                 }
-            })
-        })
+            });
+        });
 
         const users = await userModel.find({
-            _id: { $in: Array.from(otherUserId) }
-        }).select("_id name avatar email")
+            _id: { $in: otherUserIds }
+        }).select("_id name avatar email userId").lean()
+
+        const mergedData = conversation.map(conv => {
+            const otherId = conv.participants.find(pId => pId.toString() !== userId.toString());
+            const otherUser = users.find(u => u._id.toString() === otherId.toString());
+
+            return {
+                ...conv,
+                otherUser 
+            };
+        });
 
         return response.json({
             message: 'Get all participants details',
-            data: users,
+            data: mergedData,
             error: false,
             success: true
         })
