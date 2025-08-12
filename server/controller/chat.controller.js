@@ -10,7 +10,7 @@ export const getPreviousChatUsers = async (request, response) => {
         }).populate({
             path: "participants",
             select: "_id name avatar email userId"
-        }).lean()
+        }).lean().sort({updatedAt : -1})
 
         if (Array.isArray(conversation) && conversation.length === 0) {
             return response.status(400).json({

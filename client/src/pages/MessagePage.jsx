@@ -10,6 +10,7 @@ import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import { updateConversationWithNewMessage } from '../store/chatSlice';
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 const MessagePage = () => {
 
@@ -19,6 +20,8 @@ const MessagePage = () => {
     const dispatch = useDispatch()
     const user = useSelector(state => state.user)
     const messagesEndRef = useRef(null);
+    const params = useParams()
+
 
 
     const [messages, setMessages] = useState([])
@@ -41,6 +44,13 @@ const MessagePage = () => {
 
         setMessageText("")
 
+        const matchingChats = chat_details?.filter(chat =>
+            chat.group_type === "PRIVATE" &&
+            chat.participants?.some(p => p._id?.toString() === params?.conversation)
+        );
+
+        console.log("matchingChats", matchingChats)
+
     }
 
     // fetch all messages
@@ -48,10 +58,18 @@ const MessagePage = () => {
 
         (async () => {
             try {
+
+                const matchingChats = chat_details?.filter(chat =>
+                    chat.group_type === "PRIVATE" &&
+                    chat.participants?.some(p => p._id?.toString() === params?.conversation)
+                );
+
+
+
                 const response = await Axios({
                     ...SummaryApi.get_all_messages,
                     data: {
-                        allMessageId: location?.allMessageDetails?.messages
+                        allMessageId: matchingChats[0]?.messages
                     }
                 })
 
@@ -62,15 +80,15 @@ const MessagePage = () => {
                 }
 
             } catch (error) {
+                setMessages([])
                 console.log("error for fetching all messages", error)
             }
 
         })()
-    }, [])
+    }, [params?.conversation])
 
-    console.log("current conversation details", chat_details)
-    console.log("all fetchinfg messages", messages)
 
+    // recieved message and update globally [ all chat member ]
     useEffect(() => {
         if (!socketConnection) return;
 
@@ -91,8 +109,7 @@ const MessagePage = () => {
 
 
     console.log("all state upate value from redux", chat_details)
-    console.log("state updated message", messages) 
-
+    console.log("state updated message", messages)
 
 
 
@@ -160,6 +177,13 @@ const MessagePage = () => {
                     <input type="text" value={messageText}
 
                         onChange={e => setMessageText(e.target.value)}
+
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault();
+                                handleOnClick(); 
+                            }
+                        }}
 
                         className='w-full text-[#f3f3f3] outline-none' placeholder='Type a message...'
                     />

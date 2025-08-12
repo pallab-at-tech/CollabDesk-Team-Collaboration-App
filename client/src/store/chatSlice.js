@@ -21,17 +21,20 @@ const chatSlice = createSlice({
                 (c) => c._id === conversation._id
             )
 
-            if(idx != -1){
-                state.all_message[idx].messages = conversation.messages
-                state.all_message[idx].otherUser = conversation.otherUser 
+            if (idx != -1) {
+                state.all_message[idx].messages.push(message);
+
+                // Move the conversation to the top
+                const updated = state.all_message.splice(idx, 1)[0];
+                state.all_message.unshift(updated);
 
             }
-            else{
+            else {
                 state.all_message.unshift(conversation)
             }
         }
     }
 })
 
-export const { setMessageDetails, addMessageDetails , updateConversationWithNewMessage } = chatSlice.actions
+export const { setMessageDetails, addMessageDetails, updateConversationWithNewMessage } = chatSlice.actions
 export default chatSlice.reducer
