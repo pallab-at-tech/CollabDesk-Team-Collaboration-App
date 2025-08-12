@@ -80,6 +80,10 @@ const SummaryApi = {
     get_allChat_details : {
         url : "/api/chat/get-all-participants-details",
         method : "get"
+    },
+    get_all_messages : {
+        url : "/api/chat/get-all-messages",
+        method : "post"
     }
 }
 

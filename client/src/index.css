@@ -27,14 +27,11 @@
 /* scroll bar hideen */
 .hide-scrollbar {
   scrollbar-width: none;
-  /* Firefox */
   -ms-overflow-style: none;
-  /* Internet Explorer 10+ */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
-  /* Chrome, Safari, Edge */
 }
 
 
@@ -45,19 +42,34 @@
 
 .narrow-scrollbar::-webkit-scrollbar-track {
   background: #f1f1f1;
-  /* light grey background */
 }
 
 .narrow-scrollbar::-webkit-scrollbar-thumb {
   background: #02a956;
-  /* grey handle */
   border-radius: 10px;
 }
 
 .narrow-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #02a151;
-  /* darker on hover */
 }
+
+
+/* custom scroll bar for chat */
+.chat-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-track{
+  
+   background: #21222b;
+  border-radius: 5px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb{
+ background: white;
+  border-radius: 6px;
+}
+
 
 
 /* tick mark */

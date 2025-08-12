@@ -128,12 +128,16 @@ const GlobalProvider = ({ children }) => {
 
             // Cleanup on unmount
             return () => {
+                socket.off("connect");
                 socket.off("online_user");
                 socket.disconnect();
             };
         }
+        else{
+            return;
+        }
 
-    }, [user?._id])
+    }, [user?._id , dispatch])
 
     console.log("user from global provider", user)
 

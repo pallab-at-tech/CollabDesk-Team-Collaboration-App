@@ -4,9 +4,7 @@ import Axios from '../utils/Axios'
 import SummaryApi from '../common/SummaryApi'
 import { RxAvatar } from 'react-icons/rx'
 import { useSelector } from 'react-redux'
-import { useGlobalContext } from '../provider/GlobalProvider'
-import { useDispatch } from 'react-redux'
-import { addMessageDetails } from '../store/chatSlice'
+import { Link } from 'react-router-dom'
 
 const SearchNewMember = ({ close }) => {
 
@@ -14,12 +12,8 @@ const SearchNewMember = ({ close }) => {
     const [searchTerm, setSearchTerm] = useState("")
     const [allSearchData, setallSearchData] = useState([])
 
-    const { socketConnection } = useGlobalContext()
-
     const userId = useSelector(state => state.user?.userId)
-    const dispatch = useDispatch()
 
-  
 
     const searchUserFromServer = async (inputData) => {
 
@@ -45,29 +39,19 @@ const SearchNewMember = ({ close }) => {
             console.log("error from searchUserFromServer", error)
         }
     }
-
-    const handleOnclickSearchData = async () => {
-        try {
-            
-        } catch (error) {
-            console.log("error from handleOnclickSearchData",error)
-        }
-    }
-
+  
     useEffect(() => {
 
         const delayBounce = setTimeout(() => {
             if (data.trim()) {
                 setSearchTerm(data.trim())
                 searchUserFromServer(data)
-                console.log("input Data", data)
             }
         }, 1500)
 
         return () => clearTimeout(delayBounce)
 
     }, [data])
-
 
 
     return (
@@ -98,14 +82,20 @@ const SearchNewMember = ({ close }) => {
                         {allSearchData.length > 0 && allSearchData[0] !== "error" ? (
                             allSearchData.map((val, idx) => (
                                 val?.userId !== userId ? (
-                                    <div
+                                    <Link to={`/chat/${val?._id}`}
+
+                                        onClick={() => {
+                                            close()
+                                        }}
+
                                         key={`new member - ${idx}`}
+                                        state={{ allMessageDetails: {
+                                            otherUser : val
+                                        } }}
+
                                         className="flex items-center gap-3 p-2 rounded-md bg-[#2a2a32] hover:bg-[#3b3b46] transition-colors cursor-pointer my-1.5"
                                     >
 
-                                        {
-                                            console.log("val checking", val)
-                                        }
                                         <RxAvatar
                                             size={36}
                                             className="text-gray-300 border border-gray-500 rounded-full p-1"
@@ -119,7 +109,7 @@ const SearchNewMember = ({ close }) => {
                                                 {val?.userId}
                                             </p>
                                         </div>
-                                    </div>
+                                    </Link>
                                 ) : (
                                     <p className="text-gray-400 text-sm p-2">No results found</p>
                                 )

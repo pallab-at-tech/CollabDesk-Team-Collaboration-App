@@ -7,25 +7,27 @@ import SearchNewMember from './SearchNewMember';
 import { useGlobalContext } from '../provider/GlobalProvider';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
-import { setMessageDetails } from '../store/chatSlice';
+import { setMessageDetails  } from '../store/chatSlice';
 import { useDispatch } from 'react-redux';
 import { FiArrowUpLeft } from 'react-icons/fi'
 import { RxAvatar } from 'react-icons/rx';
 import { Link } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { updateConversationWithNewMessage } from '../store/chatSlice';
 
 const ChatPage = () => {
 
     const user = useSelector(state => state.user)
     const chat_details = useSelector(state => state.chat?.all_message)
+    const location = useLocation()
 
     const dispatch = useDispatch()
 
     const [openSearchForNewMember, setOpenSearchForNewMember] = useState(false)
 
-    const [messageData, setMessageData] = useState(null)
-
     const { socketConnection } = useGlobalContext()
+
 
     useEffect(() => {
         (async () => {
@@ -50,8 +52,6 @@ const ChatPage = () => {
     }, [])
 
 
-    console.log("state check for messageData", messageData)
-    console.log("chat details for user", chat_details)
 
     return (
         <section className='min-h-[calc(100vh-60px)] '>
@@ -93,11 +93,9 @@ const ChatPage = () => {
                         ) : (
                             <div className="p-3 space-y-2">
                                 {
-                                    chat_details?.map((v, i) => { 
+                                    chat_details?.map((v, i) => {
                                         return (
-                                            <Link to={`/chat/${v?._id}`} key={v?._id} onClick={() => {
-                                                setMessageData(v?._id)
-                                            }}
+                                            <Link to={`/chat/${v?.otherUser?._id}`} state={{ allMessageDetails: v }} key={v?._id || `x-${v?.otherUser?._id}`}
                                                 className="rounded-lg bg-[#205b67] hover:bg-[#2e4d66] transition-colors flex gap-3 items-center px-4 py-2.5 cursor-pointer"
                                             >
                                                 <RxAvatar
@@ -124,10 +122,10 @@ const ChatPage = () => {
 
                 </div>
 
-                <div className={`h-[calc(100vh-60px)] overflow-y-auto ${messageData === null && "flex items-center justify-center"} narrow-scrollbar bg-[#282932]`} style={{ willChange: 'transform' }}>
+                <div className={`h-[calc(100vh-60px)] overflow-y-auto ${location.state === null && "flex items-center justify-center"} narrow-scrollbar bg-[#282932]`} style={{ willChange: 'transform' }}>
 
                     {
-                        messageData === null ? (
+                        location.state === null ? (
                             <div className='select-none'>
 
                                 <p className='text-[#979797]'>Connect in confidence, knowing your messages</p>
@@ -138,7 +136,7 @@ const ChatPage = () => {
                                 </div>
                             </div>
                         ) : (
-                            <Outlet/>
+                            <Outlet />
                         )
                     }
 
@@ -149,7 +147,7 @@ const ChatPage = () => {
 
             {
                 openSearchForNewMember && (
-                    <SearchNewMember close={() => setOpenSearchForNewMember(false)}/>
+                    <SearchNewMember close={() => setOpenSearchForNewMember(false)} />
                 )
             }
 
