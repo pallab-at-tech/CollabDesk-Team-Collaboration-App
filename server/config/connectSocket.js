@@ -65,6 +65,8 @@ io.on("connection", async (socket) => {
                 readBy: [senderId]
             })
 
+            console.log("other_fileUrl_or_external_link",newMessage)
+
             conversation.messages.push(newMessage._id)
             await conversation.save()
 
@@ -99,6 +101,9 @@ io.on("connection", async (socket) => {
                 conversation: conversationToEmit,
                 message: populatedMessage,
             });
+
+            console.log("conv",conversation)
+            console.log("msg",populatedMessage)
 
 
         } catch (error) {

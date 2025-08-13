@@ -18,8 +18,8 @@ const messageSchema = new mongoose.Schema({
         default: ""
     },
     other_fileUrl_or_external_link: {
-        type: Object,
-        default: {}
+        type: String,
+        default: ""
     },
     readBy: [
         {
