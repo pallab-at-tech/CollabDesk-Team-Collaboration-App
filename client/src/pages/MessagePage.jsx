@@ -14,12 +14,24 @@ import { useParams } from 'react-router-dom';
 import { FaFileAlt } from "react-icons/fa";
 import { RiFolderVideoFill } from "react-icons/ri";
 import { IoImage } from "react-icons/io5";
+import { HiOutlineUserGroup } from "react-icons/hi";
+import uploadFile from '../utils/uploadFile';
 
 const MessagePage = () => {
 
     const chat_details = useSelector(state => state.chat?.all_message)
     const location = useLocation().state
+
+    const imgRef = useRef()
+    const videoRef = useRef()
+    const fileUrlRef = useRef()
     const [messageText, setMessageText] = useState("")
+    const [attachData, setAttachData] = useState({
+        image: "",
+        video: "",
+        other_fileUrl_or_external_link: "",
+    })
+
     const dispatch = useDispatch()
     const user = useSelector(state => state.user)
     const messagesEndRef = useRef(null);
@@ -33,21 +45,46 @@ const MessagePage = () => {
 
     const { socketConnection } = useGlobalContext()
 
+    const handleAllAtachFile = async (e) => {
+
+        const { name } = e.target
+        const file = e.target.files?.[0]
+
+        if (!file) return
+
+        const response = await uploadFile(file)
+
+        console.log("responsr from handleAllAtachFile", response)
+
+        setAttachData((preve) => {
+            return {
+                ...preve,
+                [name]: response?.secure_url
+            }
+        })
+
+        setOpenAttach(false)
+    }
 
     const handleOnClick = async () => {
 
-        if (!messageText.trim()) return
+        if (!messageText.trim() && !attachData.image && !attachData.video && !attachData.other_fileUrl_or_external_link.trim()) return
 
         socketConnection.emit("send_message", {
             senderId: user?._id,
             receiverId: location?.allMessageDetails?.otherUser?._id,
             text: messageText,
-            image: "",
-            video: "",
-            other_fileUrl_or_external_link: {},
+            image: attachData.image,
+            video: attachData.video,
+            other_fileUrl_or_external_link: attachData.other_fileUrl_or_external_link,
         })
 
         setMessageText("")
+        setAttachData({
+            image: "",
+            video: "",
+            other_fileUrl_or_external_link: ""
+        })
 
         const matchingChats = chat_details?.filter(chat =>
             chat.group_type === "PRIVATE" &&
@@ -108,10 +145,10 @@ const MessagePage = () => {
         };
     }, [socketConnection]);
 
+
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
-
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -125,6 +162,7 @@ const MessagePage = () => {
         };
     }, []);
 
+    console.log("attachData", attachData)
 
     console.log("all state upate value from redux", chat_details)
     console.log("state updated message", messages)
@@ -169,11 +207,34 @@ const MessagePage = () => {
 
                         return (
                             <div key={`new key-${index}`} className={`bg-[#f1f1f1] w-fit text-base rounded text-blue-950  px-1 py-0.5  ${isSelfMessage ? "self-end" : "self-start"}`}>
+
+                                <div>
+                                    {
+                                        value?.image && <img src={value?.image} alt="" className='h-[200px]' />
+                                    }
+
+                                    {
+                                        value?.video && <video src={value?.video} controls className='h-[200px]'></video>
+                                    }
+
+                                    {/* {
+                                        value?.other_fileUrl_or_external_link && <embed src={value?.other_fileUrl_or_external_link} type="application/pdf" className='h-[100px]'/>
+                                    } */}
+
+                                    {value?.other_fileUrl_or_external_link && (
+                                        <button
+                                            onClick={() => window.open(value.other_fileUrl_or_external_link, "_blank")}
+                                            className="bg-blue-500 text-white px-3 py-1 rounded"
+                                        >
+                                            Open PDF
+                                        </button>
+                                    )}
+                                </div>
                                 <p className='font-semibold'>
                                     {value?.text}
                                 </p>
 
-                                <p className='text-sm opacity-[60%]'>
+                                <p className='text-sm opacity-[60%]  text-end'>
                                     {indianTime}
                                 </p>
 
@@ -188,26 +249,44 @@ const MessagePage = () => {
             <div className='bg-[#1f2029] w-full rounded-t-md grid grid-cols-[100px_1fr_100px] items-center text-white shadow-md shadow-[#154174]'>
 
                 <div className='flex items-center justify-center relative'>
-                    <MdAttachment size={29} onClick={() => setOpenAttach(true)} className='cursor-pointer'/>
+                    <MdAttachment size={29} onClick={() => setOpenAttach(true)} className='cursor-pointer' />
 
                     {
                         openAttach && (
-                            <div ref={attachRef} className='bg-[#f1f1f1] text-blue-950 absolute bottom-10 left-8 min-h-[110px] min-w-[100px] flex flex-col items-start px-3.5 gap-2 py-1.5 rounded-t-2xl rounded-r-2xl rounded-l-md'>
+                            <div ref={attachRef} className='bg-[#f1f1f1] text-blue-950 absolute bottom-10 left-8 min-h-[110px] min-w-[100px] flex flex-col items-start px-4 gap-2 py-2 rounded-t-2xl rounded-r-2xl rounded-l-md'>
 
                                 <div className='flex gap-4 items-center justify-center'>
-                                    <div className='cursor-pointer'>
+
+                                    <div onClick={() => {
+                                        imgRef.current.click()
+                                    }}
+                                        className='cursor-pointer'
+                                    >
                                         <IoImage size={42} />
-                                        <p>image</p>
+                                        <p >image</p>
+                                        <input ref={imgRef} onChange={handleAllAtachFile} type="file" accept="image/*" name='image' hidden />
                                     </div>
-                                    <div className='cursor-pointer'>
+
+                                    <div onClick={() => videoRef.current.click()}
+                                        className='cursor-pointer'
+                                    >
                                         <RiFolderVideoFill size={42} />
-                                        <p>video</p>
+                                        <p className='text-center'>video</p>
+                                        <input type="file" ref={videoRef} onChange={handleAllAtachFile} accept="video/*" name='video' hidden />
                                     </div>
                                 </div>
 
-                                <div className='flex flex-col items-center cursor-pointer'>
-                                    <FaFileAlt size={42} />
-                                    <p>file</p>
+                                <div className='flex gap-4 items-start justify-center'>
+                                    <div onClick={() => fileUrlRef.current.click()} className='cursor-pointer'>
+                                        <FaFileAlt size={42} />
+                                        <p className='text-center'>file</p>
+                                        <input type="file" ref={fileUrlRef} onChange={handleAllAtachFile} accept="application/pdf" name='other_fileUrl_or_external_link' hidden />
+                                    </div>
+
+                                    {/* <div className='cursor-pointer'>
+                                        <HiOutlineUserGroup size={42}/>
+                                        <p className='leading-[1] text-center'>Create group</p>
+                                    </div> */}
                                 </div>
                             </div>
                         )
@@ -235,6 +314,22 @@ const MessagePage = () => {
                 </div>
 
             </div>
+
+            {
+                attachData.image && (
+                    <section className='fixed right-0 left-0 top-0 bottom-[58px] flex flex-col items-center justify-center z-50 bg-gray-800/75'>
+                        <img src={attachData.image} alt="" className='h-[300px]' />
+                    </section>
+                )
+            }
+
+            {
+                attachData?.video && (
+                    <section className='fixed right-0 left-0 top-0 bottom-[58px] flex flex-col items-center justify-center z-50 bg-gray-800/75'>
+                        <video src={attachData.video} className='h-[350px]' controls></video>
+                    </section>
+                )
+            }
 
         </section>
     )

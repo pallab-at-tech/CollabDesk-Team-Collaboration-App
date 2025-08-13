@@ -14,7 +14,8 @@ import { RxAvatar } from 'react-icons/rx';
 import { Link } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import { updateConversationWithNewMessage } from '../store/chatSlice';
+import { HiUserGroup } from "react-icons/hi2";
+import CreateGroup from '../components/common/CreateGroup';
 
 const ChatPage = () => {
 
@@ -25,6 +26,7 @@ const ChatPage = () => {
     const dispatch = useDispatch()
 
     const [openSearchForNewMember, setOpenSearchForNewMember] = useState(false)
+    const [openGroupCreateWindow, setOpenGroupCreateWindow] = useState(false)
 
     const { socketConnection } = useGlobalContext()
 
@@ -56,7 +58,7 @@ const ChatPage = () => {
     return (
         <section className='min-h-[calc(100vh-60px)] '>
 
-            <div className='grid grid-cols-[26%_1fr]'>
+            <div className='grid grid-cols-[28%_1fr]'>
 
                 <div className='h-[calc(100vh-60px)] bg-[#21222b] text-[#f4f4f4]  overflow-y-auto scroll-smooth hide-scrollbar border-r border-[#c1c1c17e] ring-1 ring-[#c1c1c17e] relative' style={{ willChange: 'transform' }}>
 
@@ -75,6 +77,10 @@ const ChatPage = () => {
                                 placeholder="Search..."
                                 className="bg-transparent outline-none text-sm placeholder-gray-400 w-full"
                             />
+                        </div>
+
+                        <div>
+                            <HiUserGroup size={28} onClick={()=>setOpenGroupCreateWindow(true)} title='create group'/>
                         </div>
 
                         <div>
@@ -148,6 +154,12 @@ const ChatPage = () => {
             {
                 openSearchForNewMember && (
                     <SearchNewMember close={() => setOpenSearchForNewMember(false)} />
+                )
+            }
+
+            {
+                openGroupCreateWindow && (
+                    <CreateGroup close={()=>setOpenGroupCreateWindow(false)}/>
                 )
             }
 
