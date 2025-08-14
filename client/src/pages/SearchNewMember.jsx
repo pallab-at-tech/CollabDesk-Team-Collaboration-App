@@ -13,6 +13,7 @@ const SearchNewMember = ({ close }) => {
     const [allSearchData, setallSearchData] = useState([])
 
     const userId = useSelector(state => state.user?.userId)
+    const chatData = useSelector(state => state.chat?.all_message)
 
 
     const searchUserFromServer = async (inputData) => {
@@ -39,7 +40,7 @@ const SearchNewMember = ({ close }) => {
             console.log("error from searchUserFromServer", error)
         }
     }
-  
+
     useEffect(() => {
 
         const delayBounce = setTimeout(() => {
@@ -52,6 +53,17 @@ const SearchNewMember = ({ close }) => {
         return () => clearTimeout(delayBounce)
 
     }, [data])
+
+
+    console.log("url xheck chat",chatData)
+    const urlFind = (val) =>{
+
+        const filterData = chatData.filter(preve => {
+           return preve.group_type === "PRIVATE" && preve?.otherUser?.userId === val?.userId
+        })
+
+        return filterData[0]?._id
+    }
 
 
     return (
@@ -80,40 +92,49 @@ const SearchNewMember = ({ close }) => {
 
                     <div className="w-full overflow-y-auto max-h-[145px] px-4 py-2  rounded-lg shadow-inner">
                         {allSearchData.length > 0 && allSearchData[0] !== "error" ? (
-                            allSearchData.map((val, idx) => (
-                                val?.userId !== userId ? (
-                                    <Link to={`/chat/${val?._id}`}
+                            allSearchData.map((val, idx) => {
 
-                                        onClick={() => {
-                                            close()
-                                        }}
+                                const url = urlFind(val)
 
-                                        key={`new member - ${idx}`}
-                                        state={{ allMessageDetails: {
-                                            otherUser : val
-                                        } }}
+                                return (
+                                    (
+                                        val?.userId !== userId ? (
+                                            <Link to={`/chat/${url || val?._id}`}
 
-                                        className="flex items-center gap-3 p-2 rounded-md bg-[#2a2a32] hover:bg-[#3b3b46] transition-colors cursor-pointer my-1.5"
-                                    >
+                                                onClick={() => {
+                                                    close()
+                                                }}
 
-                                        <RxAvatar
-                                            size={36}
-                                            className="text-gray-300 border border-gray-500 rounded-full p-1"
-                                        />
+                                                key={`new member - ${idx}`}
+                                                state={{
+                                                    allMessageDetails: {
+                                                        otherUser: val
+                                                    }
+                                                }}
 
-                                        <div className="flex flex-col leading-tight text-sm text-gray-200">
-                                            <p className="font-medium text-white max-w-[14ch] truncate">
-                                                {val?.name}
-                                            </p>
-                                            <p className="text-[12px] text-gray-400 max-w-[14ch] truncate">
-                                                {val?.userId}
-                                            </p>
-                                        </div>
-                                    </Link>
-                                ) : (
-                                    <p className="text-gray-400 text-sm p-2">No results found</p>
+                                                className="flex items-center gap-3 p-2 rounded-md bg-[#2a2a32] hover:bg-[#3b3b46] transition-colors cursor-pointer my-1.5"
+                                            >
+
+                                                <RxAvatar
+                                                    size={36}
+                                                    className="text-gray-300 border border-gray-500 rounded-full p-1"
+                                                />
+
+                                                <div className="flex flex-col leading-tight text-sm text-gray-200">
+                                                    <p className="font-medium text-white max-w-[14ch] truncate">
+                                                        {val?.name}
+                                                    </p>
+                                                    <p className="text-[12px] text-gray-400 max-w-[14ch] truncate">
+                                                        {val?.userId}
+                                                    </p>
+                                                </div>
+                                            </Link>
+                                        ) : (
+                                            <p className="text-gray-400 text-sm p-2">No results found</p>
+                                        )
+                                    )
                                 )
-                            ))
+                            })
                         ) : (
                             <p className="text-gray-400 text-sm p-2">No results found</p>
                         )}

@@ -59,14 +59,29 @@
   width: 6px;
 }
 
-.chat-scrollbar::-webkit-scrollbar-track{
-  
-   background: #21222b;
+.chat-scrollbar::-webkit-scrollbar-track {
+
+  background: #21222b;
   border-radius: 5px;
 }
 
-.chat-scrollbar::-webkit-scrollbar-thumb{
- background: white;
+.chat-scrollbar::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 6px;
+}
+
+/* scroll-bar for create group */
+.group-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.group-scrollbar::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background: white;
+}
+
+.group-scrollbar::-webkit-scrollbar-thumb {
+  background: #262d66;
   border-radius: 6px;
 }
 

@@ -5,6 +5,10 @@ const messageSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "user"
     },
+    senderName : {
+        type : String,
+        default : ""
+    },
     text: {
         type: String,
         default: ""
@@ -38,10 +42,25 @@ const conversationSchema = new mongoose.Schema({
         enum: ["PRIVATE", "GROUP"],
         required: [true, "give private or group chat"]
     },
+    group_image: {
+        type: String,
+        default: ""
+    },
+    group_name: {
+        type: String,
+        default: ""
+    },
     participants: [
         {
             type: mongoose.Schema.ObjectId,
             ref: "user"
+        }
+    ],
+    admin: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: "user",
+            default: ""
         }
     ],
     messages: [

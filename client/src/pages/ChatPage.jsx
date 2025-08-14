@@ -7,7 +7,7 @@ import SearchNewMember from './SearchNewMember';
 import { useGlobalContext } from '../provider/GlobalProvider';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
-import { setMessageDetails  } from '../store/chatSlice';
+import { setMessageDetails } from '../store/chatSlice';
 import { useDispatch } from 'react-redux';
 import { FiArrowUpLeft } from 'react-icons/fi'
 import { RxAvatar } from 'react-icons/rx';
@@ -16,6 +16,7 @@ import { Outlet } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { HiUserGroup } from "react-icons/hi2";
 import CreateGroup from '../components/common/CreateGroup';
+import { FaUserGroup } from "react-icons/fa6";
 
 const ChatPage = () => {
 
@@ -53,7 +54,7 @@ const ChatPage = () => {
         })();
     }, [])
 
-
+    console.log("chat_details details", chat_details)
 
     return (
         <section className='min-h-[calc(100vh-60px)] '>
@@ -80,7 +81,7 @@ const ChatPage = () => {
                         </div>
 
                         <div>
-                            <HiUserGroup size={28} onClick={()=>setOpenGroupCreateWindow(true)} title='create group'/>
+                            <HiUserGroup size={28} onClick={() => setOpenGroupCreateWindow(true)} title='create group' />
                         </div>
 
                         <div>
@@ -101,21 +102,43 @@ const ChatPage = () => {
                                 {
                                     chat_details?.map((v, i) => {
                                         return (
-                                            <Link to={`/chat/${v?.otherUser?._id}`} state={{ allMessageDetails: v }} key={v?._id || `x-${v?.otherUser?._id}`}
+                                            <Link to={`/chat/${v?._id}`} state={{ allMessageDetails: v }} key={v?._id || `x-${v?.otherUser?._id}`}
                                                 className="rounded-lg bg-[#205b67] hover:bg-[#2e4d66] transition-colors flex gap-3 items-center px-4 py-2.5 cursor-pointer"
                                             >
-                                                <RxAvatar
-                                                    size={38}
-                                                    className="text-gray-300 border border-gray-500 rounded-full p-1"
-                                                />
+                                          
+                                                {
+                                                    v?.group_type === "GROUP" ? (
+                                                        <FaUserGroup
+                                                            size={38}
+                                                            className="text-gray-300 border border-gray-500 rounded-full p-1"
+                                                        />
+                                                    ) : (
+                                                        <RxAvatar
+                                                            size={38}
+                                                            className="text-gray-300 border border-gray-500 rounded-full p-1"
+                                                        />
+                                                    )
+                                                }
 
                                                 <div className='flex flex-col leading-tight text-sm text-gray-200'>
-                                                    <p className="font-medium text-[16px] text-white max-w-[24ch] truncate">
-                                                        {v?.otherUser?.name}
-                                                    </p>
-                                                    <p className="text-[12px] text-gray-400 max-w-[24ch] truncate">
-                                                        {v?.otherUser?.userId}
-                                                    </p>
+
+                                                    {
+                                                        v?.group_type === "GROUP" ? (
+                                                            <p className="font-medium text-[16px] text-white max-w-[24ch] truncate">
+                                                                {v?.group_name}
+                                                            </p>
+                                                        ) : (
+                                                            <>
+                                                                <p className="font-medium text-[16px] text-white max-w-[24ch] truncate">
+                                                                    {v?.otherUser?.name}
+                                                                </p>
+                                                                <p className="text-[12px] text-gray-400 max-w-[24ch] truncate">
+                                                                    {v?.otherUser?.userId}
+                                                                </p>
+                                                            </>
+                                                        )
+                                                    }
+
                                                 </div>
                                             </Link>
                                         )
@@ -159,7 +182,7 @@ const ChatPage = () => {
 
             {
                 openGroupCreateWindow && (
-                    <CreateGroup close={()=>setOpenGroupCreateWindow(false)}/>
+                    <CreateGroup close={() => setOpenGroupCreateWindow(false)} />
                 )
             }
 

@@ -5,12 +5,14 @@ export const getPreviousChatUsers = async (request, response) => {
     try {
         const userId = request.userId
 
-        const conversation = await conversationModel.find({
-            participants: userId
-        }).populate({
-            path: "participants",
-            select: "_id name avatar email userId"
-        }).lean().sort({updatedAt : -1})
+        const conversation = await conversationModel
+            .find({ participants: { $in: [userId] } })
+            .sort({ updatedAt: -1 })
+            .populate({
+                path: "participants",
+                select: "_id name avatar email userId"
+            })
+            .lean();
 
         if (Array.isArray(conversation) && conversation.length === 0) {
             return response.status(400).json({
@@ -26,9 +28,13 @@ export const getPreviousChatUsers = async (request, response) => {
             );
             return {
                 ...conv,
-                otherUser
+                otherUser,
+                participants : conv.participants
             };
         });
+
+        console.log("mergedData mergedData mergedData",mergedData)
+
 
         return response.json({
             message: 'Get all participants details',
@@ -64,10 +70,10 @@ export const fetchAllMessages = async (request, response) => {
         ).sort({ createdAt: 1 }).lean()
 
         return response.json({
-            message : 'all messages get',
-            data : messages,
-            error : false,
-            success : true
+            message: 'all messages get',
+            data: messages,
+            error: false,
+            success: true
         })
 
     } catch (error) {

@@ -16,11 +16,13 @@ import { RiFolderVideoFill } from "react-icons/ri";
 import { IoImage } from "react-icons/io5";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import uploadFile from '../utils/uploadFile';
+import { useNavigate } from 'react-router-dom';
 
 const MessagePage = () => {
 
     const chat_details = useSelector(state => state.chat?.all_message)
     const location = useLocation().state
+    const navigate = useNavigate()
 
     const imgRef = useRef()
     const videoRef = useRef()
@@ -32,10 +34,16 @@ const MessagePage = () => {
         other_fileUrl_or_external_link: "",
     })
 
+    const [isGroup, setIsGroup] = useState(true)
+
     const dispatch = useDispatch()
     const user = useSelector(state => state.user)
     const messagesEndRef = useRef(null);
     const params = useParams()
+
+    useEffect(() => {
+        setIsGroup(location?.allMessageDetails?.group_type === "GROUP");
+    }, [location?.allMessageDetails?.group_type]);
 
 
 
@@ -53,8 +61,6 @@ const MessagePage = () => {
         if (!file) return
 
         const response = await uploadFile(file)
-
-        console.log("responsr from handleAllAtachFile", response)
 
         setAttachData((preve) => {
             return {
@@ -86,13 +92,27 @@ const MessagePage = () => {
             other_fileUrl_or_external_link: ""
         })
 
-        const matchingChats = chat_details?.filter(chat =>
-            chat.group_type === "PRIVATE" &&
-            chat.participants?.some(p => p._id?.toString() === params?.conversation)
-        );
+    }
 
-        console.log("matchingChats", matchingChats)
+    const handleGroupMessageSend = async () => {
+        if (!messageText.trim() && !attachData.image && !attachData.video && !attachData.other_fileUrl_or_external_link.trim()) return
 
+        socketConnection.emit("send_message_group", {
+            senderId: user?._id,
+            conversationId: location?.allMessageDetails?._id,
+            text: messageText,
+            image: attachData.image,
+            video: attachData.video,
+            other_fileUrl_or_external_link: attachData.other_fileUrl_or_external_link,
+            senderName: user?.name.split(" ")[0]
+        })
+
+        setMessageText("")
+        setAttachData({
+            image: "",
+            video: "",
+            other_fileUrl_or_external_link: ""
+        })
     }
 
     // fetch all messages
@@ -102,11 +122,8 @@ const MessagePage = () => {
             try {
 
                 const matchingChats = chat_details?.filter(chat =>
-                    chat.group_type === "PRIVATE" &&
-                    chat.participants?.some(p => p._id?.toString() === params?.conversation)
+                    chat?._id === params?.conversation
                 );
-
-
 
                 const response = await Axios({
                     ...SummaryApi.get_all_messages,
@@ -135,9 +152,20 @@ const MessagePage = () => {
         if (!socketConnection) return;
 
         socketConnection.on("receive_message", (data) => {
-            console.log("yep this is message data", data);
+
             dispatch(updateConversationWithNewMessage({ conversation: data.conversation, message: data?.message }))
             setMessages(prev => [...prev, data?.message]);
+
+            const url = params.conversation === data?.conversation?._id
+
+            if (!url) {
+                navigate(`/chat/${data?.conversation?._id}`, {
+                    state: {
+                        allMessageDetails: data.conversation
+                    }
+                })
+
+            }
         });
 
         return () => {
@@ -162,27 +190,30 @@ const MessagePage = () => {
         };
     }, []);
 
-    console.log("attachData", attachData)
-
-    console.log("all state upate value from redux", chat_details)
-    console.log("state updated message", messages)
-
-
 
     return (
         <section className='h-[calc(100vh-60px)] w-full grid grid-rows-[65px_1fr_55px]'>
 
             <div className='bg-[#21222b] px-4 grid grid-cols-[300px_1fr] w-full items-center text-white shadow-md shadow-[#57575765]'>
 
-                <div className='flex gap-2.5 pl-2'>
+                <div className={`flex gap-2.5 ${location?.allMessageDetails?.group_type === "GROUP" ? "items-center" : "items-start"} pl-2`}>
                     <div className='flex items-center justify-center'>
                         <RxAvatar size={38} />
                     </div>
 
-                    <div className='flex flex-col leading-tight text-base items-start'>
-                        <p>{location?.allMessageDetails?.otherUser?.name}</p>
-                        <p>{location?.allMessageDetails?.otherUser?.userId}</p>
-                    </div>
+                    {
+                        location?.allMessageDetails?.group_type === "GROUP" ? (
+                            <div className='text-lg'>
+                                <p>{location?.allMessageDetails?.group_name}</p>
+                            </div>
+                        ) : (
+                            <div className='flex flex-col leading-tight text-base items-start'>
+                                <p>{location?.allMessageDetails?.otherUser?.name}</p>
+                                <p>{location?.allMessageDetails?.otherUser?.userId}</p>
+                            </div>
+                        )
+                    }
+
                 </div>
 
                 <div className='flex items-center justify-end'>
@@ -205,10 +236,20 @@ const MessagePage = () => {
                             day: "2-digit"
                         })
 
-                        return (
-                            <div key={`new key-${index}`} className={`bg-[#f1f1f1] w-fit text-base rounded text-blue-950  px-1 py-0.5  ${isSelfMessage ? "self-end" : "self-start"}`}>
 
-                                <div>
+                        return (
+                            <div key={`new key-${index}`} className={`bg-[#f1f1f1] w-fit text-base rounded text-blue-950  px-1 py-0.5 ${location?.allMessageDetails?.group_type === "GROUP" && index === 0 ? "self-center" : `${isSelfMessage ? "self-end" : "self-start"}`} `}>
+
+                                {
+                                    (isGroup && index !== 0 && user?._id && value?.senderId !== user?._id) && (
+                                        <div className='-mb-0.5 text-sm'>
+                                            {value?.senderName}
+                                        </div>
+
+                                    )
+                                }
+
+                                <div className='pt-1'>
                                     {
                                         value?.image && <img src={value?.image} alt="" className='h-[200px]' />
                                     }
@@ -216,10 +257,6 @@ const MessagePage = () => {
                                     {
                                         value?.video && <video src={value?.video} controls className='h-[200px]'></video>
                                     }
-
-                                    {/* {
-                                        value?.other_fileUrl_or_external_link && <embed src={value?.other_fileUrl_or_external_link} type="application/pdf" className='h-[100px]'/>
-                                    } */}
 
                                     {value?.other_fileUrl_or_external_link && (
                                         <button
@@ -230,11 +267,11 @@ const MessagePage = () => {
                                         </button>
                                     )}
                                 </div>
-                                <p className='font-semibold'>
+                                <p className={`${(location?.allMessageDetails?.group_type === "GROUP" && index === 0) ? "text-[13px]" : "font-semibold"}`}>
                                     {value?.text}
                                 </p>
 
-                                <p className='text-sm opacity-[60%]  text-end'>
+                                <p className={`text-sm opacity-[60%] ${isSelfMessage ? "text-end": "text-start"} `}>
                                     {indianTime}
                                 </p>
 
@@ -293,25 +330,55 @@ const MessagePage = () => {
                     }
                 </div>
 
-                <div>
-                    <input type="text" value={messageText}
 
-                        onChange={e => setMessageText(e.target.value)}
+                {
+                    location?.allMessageDetails?.group_type === "PRIVATE" ? (
+                        <>
 
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter" && !e.shiftKey) {
-                                e.preventDefault();
-                                handleOnClick();
-                            }
-                        }}
+                            <div>
+                                <input type="text" value={messageText}
 
-                        className='w-full text-[#f3f3f3] outline-none' placeholder='Type a message...'
-                    />
-                </div>
+                                    onChange={e => setMessageText(e.target.value)}
 
-                <div className='flex items-center justify-center cursor-pointer'>
-                    <IoSendOutline size={29} onClick={() => handleOnClick()} />
-                </div>
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" && !e.shiftKey) {
+                                            e.preventDefault();
+                                            handleOnClick();
+                                        }
+                                    }}
+
+                                    className='w-full text-[#f3f3f3] outline-none' placeholder='Type a message...'
+                                />
+                            </div>
+
+                            <div className='flex items-center justify-center cursor-pointer'>
+                                <IoSendOutline size={29} onClick={() => handleOnClick()} />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div>
+                                <input type="text" value={messageText}
+
+                                    onChange={e => setMessageText(e.target.value)}
+
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" && !e.shiftKey) {
+                                            e.preventDefault();
+                                            handleGroupMessageSend();
+                                        }
+                                    }}
+
+                                    className='w-full text-[#f3f3f3] outline-none' placeholder='Type a message...'
+                                />
+                            </div>
+
+                            <div className='flex items-center justify-center cursor-pointer'>
+                                <IoSendOutline size={29} onClick={() => handleGroupMessageSend()} />
+                            </div>
+                        </>
+                    )
+                }
 
             </div>
 
