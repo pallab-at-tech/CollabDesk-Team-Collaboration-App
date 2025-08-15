@@ -133,7 +133,7 @@ const CreateGroup = ({ close }) => {
     return (
         <section className="fixed inset-0 flex gap-4 items-center justify-center z-50 bg-black/60">
 
-            <div className="bg-[#f1f1f1] text-blue-950 px-6 py-5 rounded-2xl max-w-[380px] shadow-lg">
+            <div className="bg-[#f1f1f1] text-blue-950 px-6 py-5 rounded-2xl max-w-[380px] shadow-lg sm:mx-0 mx-6">
 
                 <h1 className="text-xl font-bold mb-4">
                     Secret group for planning the surprise party 🎉

@@ -133,12 +133,12 @@ const ColumnItem = ({ val, isOpen, setColumnSetting }) => {
                         />
                     </div>
 
-                    <FaAngleDown onClick={() => setTaskOpen(!taskOpen)} className={`mt-1 text-[#dbdbdb] cursor-pointer transform transition-transform duration-500 ${taskOpen ? "rotate-180" : "rotate-0"}`} size={20} />
+                    <FaAngleDown onClick={() => setTaskOpen(!taskOpen)} className={`mt-1 mb-2 text-[#dbdbdb] cursor-pointer transform transition-transform duration-500 ${taskOpen ? "rotate-180" : "rotate-0"}`} size={20} />
                 </div>
 
 
                 {isOpen && (
-                    <div ref={dropdownRef} className='absolute -right-12  -top-[115px] z-10'>
+                    <div ref={dropdownRef} className='absolute sm:-right-12 -right-[80px]  sm:-top-[115px] -top-[110px] z-10'>
                         <CoumnAllSettings columnId={val?._id} columnName={val?.name} />
                     </div>
                 )}
@@ -148,26 +148,32 @@ const ColumnItem = ({ val, isOpen, setColumnSetting }) => {
             {
                 taskOpen ? (
                     val?.tasks?.length === 0 ? (
-                        <div className={`ml-10 flex justify-center items-center transition-opacity duration-500 ease-in-out  bg-gray-700 border border-gray-600 min-h-[200px] min-w-10 max-w-[550px]  rounded-md pr-8 pt-2 pb-6 ${taskOpen ? "opacity-100" : "opacity-0 h-0"}`}>
+                        <div className={`sm:ml-10 flex justify-center items-center transition-opacity duration-500 ease-in-out  bg-gray-700 border border-gray-600 min-h-[200px] min-w-10 max-w-[550px]  rounded-md pr-8 pt-2 pb-6 ${taskOpen ? "opacity-100" : "opacity-0 h-0"}`}>
                             <p className='text-[#dbdbdb] font-semibold text-lg'>No task assigned yet ?!</p>
                         </div>
                     ) : (
-                        <div className={`ml-10 transition-opacity duration-500 ease-in-out  bg-gray-700 border border-gray-600 min-h-[200px] min-w-10 max-w-[550px]  rounded-md pr-8 pt-2 pb-6 ${taskOpen ? "opacity-100" : "opacity-0 h-0"}`}>
+                        <div className={`sm:ml-10 transition-opacity duration-500 ease-in-out  bg-gray-700 border border-gray-600 min-h-[200px] min-w-10 max-w-[550px]  rounded-md pr-8 pt-2 pb-6 ${taskOpen ? "opacity-100" : "opacity-0 h-0"}`}>
 
                             {
                                 val?.tasks?.map((val, idx) => {
                                     return (
                                         <div key={`task-assign-${idx}`} className='flex my-4 gap-0 items-center justify-start relative'>
 
-                                            <div className='absolute top-2 left-2'>
+                                            <div className='absolute top-2 left-2 sm:block hidden'>
                                                 <ArrowSymbol />
                                             </div>
 
-                                            <div className='relative ml-20 mt-3 w-fit max-w-[400px] bg-gradient-to-l from-[#273e5b80] to-[#7e828761] border-2 border-gray-400 rounded-md px-2 py-2 '>
+                                            <div className='relative sm:ml-20 ml-6 sm:mt-3 mt-8 w-fit max-w-[400px] bg-gradient-to-l from-[#273e5b80] to-[#7e828761] border-2 border-gray-400 rounded-md px-2 py-2 '>
 
-                                                <div className='flex gap-1 font-semibold text-[#d68408b9] absolute -top-[26px] right-4 text-sm'>
-                                                    <p>Created At : </p>
-                                                    <p>{`${val?.createdAt?.split("T")[0]} , ${val?.createdAt?.split("T")[1]?.split(".")[0]}`}</p>
+                                                <div className='flex sm:flex-row flex-col gap-1 font-semibold text-[#d68408b9] absolute sm:-top-[26px] -top-[40px] sm:right-4 sm:left-auto left-0 text-sm'>
+
+                                                    <div className='flex flex-row gap-1'>
+                                                        <p>Created At : </p>
+                                                        <p className='sm:block hidden'>{`${val?.createdAt?.split("T")[0]} , ${val?.createdAt?.split("T")[1]?.split(".")[0]}`}</p>
+                                                        <p className='sm:hidden block'>{`${val?.createdAt?.split("T")[0]}`}</p>
+                                                    </div>
+
+                                                    <p className='sm:hidden block -mt-2'>{`${val?.createdAt?.split("T")[1]?.split(".")[0]}`}</p>
                                                 </div>
 
                                                 <div className='text-[#acca03] text-[20px] font-bold'>
@@ -230,7 +236,7 @@ const ColumnItem = ({ val, isOpen, setColumnSetting }) => {
 
                                                 </div>
 
-                                                <div className='flex flex-wrap justify-between items-center mt-3'>
+                                                <div className='flex flex-wrap sm:flex-row flex-col justify-between sm:items-center items-start mt-3'>
                                                     <div className='text-white font-bold leading-[19px]'>
                                                         <p>Due Date</p>
 
@@ -248,7 +254,7 @@ const ColumnItem = ({ val, isOpen, setColumnSetting }) => {
 
                                                     </div>
 
-                                                    <div className='text-white font-bold leading-[19px] '>
+                                                    <div className='text-white font-bold leading-[19px] pt-2'>
                                                         <p>Assigned by</p>
                                                         <p className='ml-3 text-[14px] text-[#ccccccd4]'>{val?.assignby}</p>
                                                     </div>
@@ -264,7 +270,7 @@ const ColumnItem = ({ val, isOpen, setColumnSetting }) => {
                         </div>
                     )
                 ) : (
-                    <div className={`ml-10 flex items-center justify-center transition-all duration-500 ease-in-out bg-gray-700 border border-gray-600 min-h-[50px] min-w-10 max-w-[250px]  rounded-md pr-8 pt-2 pb-6 -mt-4 ${taskOpen ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
+                    <div className={`sm:ml-10 flex items-center justify-center transition-all duration-500 ease-in-out bg-gray-700 border border-gray-600 min-h-[50px] min-w-10 max-w-[250px]  rounded-md pr-8 pt-2 pb-6 -mt-4 ${taskOpen ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
                         <p className='text-[#dbdbdb] mt-2 font-semibold'>{`${val?.tasks?.length === 0 ? "No task assigned yet ?!" : `${val?.tasks?.length} assignment available ....`}`}</p>
                     </div>
                 )
@@ -277,7 +283,7 @@ const ColumnItem = ({ val, isOpen, setColumnSetting }) => {
                     <section className='fixed inset-0 flex items-center justify-center z-50 bg-black/60'>
 
                         <div className=''>
-                            <img ref={imageDropRef} src={imageOpen?.image} alt="" className='h-[400px] transform transition duration-[300ms] scale-100' />
+                            <img ref={imageDropRef} src={imageOpen?.image} alt="" className='sm:w-[600px] w-[330px] transform transition duration-[300ms] scale-100' />
                         </div>
 
                     </section>
@@ -331,7 +337,7 @@ const ColumnItem = ({ val, isOpen, setColumnSetting }) => {
                     <section className='fixed inset-0 flex items-center justify-center z-50 bg-black/60'>
 
                         <div>
-                            <video onPlay={true} controls ref={videoDropRef} src={videoOpen?.video} className='h-[400px] transform transition duration-[300ms] scale-100'></video>
+                            <video onPlay={true} controls ref={videoDropRef} src={videoOpen?.video} className='sm:w-[600px] w-[330px] transform transition duration-[300ms] scale-100'></video>
                         </div>
 
                     </section>

@@ -17,6 +17,7 @@ import { IoImage } from "react-icons/io5";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import uploadFile from '../utils/uploadFile';
 import { useNavigate } from 'react-router-dom';
+import { IoClose } from "react-icons/io5";
 
 const MessagePage = () => {
 
@@ -41,6 +42,8 @@ const MessagePage = () => {
     const messagesEndRef = useRef(null);
     const params = useParams()
 
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
         setIsGroup(location?.allMessageDetails?.group_type === "GROUP");
     }, [location?.allMessageDetails?.group_type]);
@@ -55,21 +58,52 @@ const MessagePage = () => {
 
     const handleAllAtachFile = async (e) => {
 
-        const { name } = e.target
-        const file = e.target.files?.[0]
+        try {
+            setLoading(true)
 
-        if (!file) return
+            const { name } = e.target
+            const file = e.target.files?.[0]
 
-        const response = await uploadFile(file)
+            if (!file) return
 
-        setAttachData((preve) => {
-            return {
-                ...preve,
-                [name]: response?.secure_url
+            const response = await uploadFile(file)
+
+            setAttachData((preve) => {
+                return {
+                    ...preve,
+                    [name]: response?.secure_url
+                }
+            })
+
+            if (name === "image") {
+                const img = new Image();
+                img.src = attachData.image;
+
+                img.onload = () => setLoading(false);
+                img.onerror = () => {
+                    console.error("Image failed to load");
+                    setLoading(false);
+                };
+
+            } else if (name === "video") {
+                const video = document.createElement("video");
+                video.src = attachData.video;
+
+                video.onloadeddata = () => setLoading(false);
+                video.onerror = () => {
+                    console.error("Video failed to load");
+                    setLoading(false);
+                };
+
+            } else {
+                setLoading(false);
             }
-        })
 
-        setOpenAttach(false)
+            setOpenAttach(false)
+
+        } catch (error) {
+            console.log("Error from handleAllAtachFile", error)
+        }
     }
 
     const handleOnClick = async () => {
@@ -191,8 +225,9 @@ const MessagePage = () => {
     }, []);
 
 
+
     return (
-        <section className='h-[calc(100vh-60px)] w-full grid grid-rows-[65px_1fr_55px]'>
+        <section className='h-[calc(100vh-60px)] w-full grid grid-rows-[65px_1fr_55px] overflow-hidden'>
 
             <div className='bg-[#21222b] px-4 grid grid-cols-[300px_1fr] w-full items-center text-white shadow-md shadow-[#57575765]'>
 
@@ -221,7 +256,7 @@ const MessagePage = () => {
                 </div>
             </div>
 
-            <div className='h-full overflow-y-auto px-2.5 flex flex-col gap-2.5 py-4 chat-scrollbar' style={{ willChange: 'transform' }}>
+            <div className='h-full overflow-y-auto px-2.5 flex flex-col gap-2.5 py-4 chat-scrollbar relative' style={{ willChange: 'transform' }}>
                 {
                     Array.isArray(messages) && messages.map((value, index) => {
 
@@ -241,21 +276,21 @@ const MessagePage = () => {
                             <div key={`new key-${index}`} className={`bg-[#f1f1f1] w-fit text-base rounded text-blue-950  px-1 py-0.5 ${location?.allMessageDetails?.group_type === "GROUP" && index === 0 ? "self-center" : `${isSelfMessage ? "self-end" : "self-start"}`} `}>
 
                                 {
-                                    (isGroup && index !== 0 && user?._id && value?.senderId !== user?._id) && (
-                                        <div className='-mb-0.5 text-sm'>
+                                    (index !== 0 && user?._id && value?.senderId !== user?._id) && (
+                                        isGroup && <div className='sm:-mb-0.5 -mb-1.5 text-sm'>
                                             {value?.senderName}
                                         </div>
 
                                     )
                                 }
 
-                                <div className='pt-1'>
+                                <div className='pt-1 r'>
                                     {
-                                        value?.image && <img src={value?.image} alt="" className='h-[200px]' />
+                                        value?.image && <img src={value?.image} alt="" className='w-[200px]' />
                                     }
 
                                     {
-                                        value?.video && <video src={value?.video} controls className='h-[200px]'></video>
+                                        value?.video && <video src={value?.video} controls className='w-[200px]'></video>
                                     }
 
                                     {value?.other_fileUrl_or_external_link && (
@@ -267,11 +302,11 @@ const MessagePage = () => {
                                         </button>
                                     )}
                                 </div>
-                                <p className={`${(location?.allMessageDetails?.group_type === "GROUP" && index === 0) ? "text-[13px]" : "font-semibold"}`}>
+                                <p className={`${(location?.allMessageDetails?.group_type === "GROUP" && index === 0) ? "text-[13px]" : "font-semibold"} `}>
                                     {value?.text}
                                 </p>
 
-                                <p className={`text-sm opacity-[60%] ${isSelfMessage ? "text-end": "text-start"} `}>
+                                <p className={`text-sm opacity-[60%] ${isSelfMessage ? "text-end" : "text-start"} `}>
                                     {indianTime}
                                 </p>
 
@@ -382,10 +417,29 @@ const MessagePage = () => {
 
             </div>
 
+            <div className={`absolute  left-[40%] bottom-0 top-[40%] ${loading ? "block" : "hidden"}`}>
+                <div className='loader'></div>
+            </div>
+
             {
+
                 attachData.image && (
                     <section className='fixed right-0 left-0 top-0 bottom-[58px] flex flex-col items-center justify-center z-50 bg-gray-800/75'>
-                        <img src={attachData.image} alt="" className='h-[300px]' />
+                        <div className='relative w-fit h-fit'>
+                            <IoClose size={30}
+                                onClick={() => {
+                                    setAttachData((pre) => {
+                                        return {
+                                            ...pre,
+                                            image: ""
+                                        }
+                                    })
+                                    setLoading(false)
+                                }}
+                                className='absolute text-[#cbcbcb] hover:text-[#e7e5e5] z-40 -top-10 -right-8'
+                            />
+                            <img src={attachData.image} alt="" className='h-[300px]' />
+                        </div>
                     </section>
                 )
             }
@@ -393,7 +447,23 @@ const MessagePage = () => {
             {
                 attachData?.video && (
                     <section className='fixed right-0 left-0 top-0 bottom-[58px] flex flex-col items-center justify-center z-50 bg-gray-800/75'>
-                        <video src={attachData.video} className='h-[350px]' controls></video>
+                        <div className='relative w-fit h-fit'>
+                            <IoClose size={30}
+                                onClick={() => {
+                                    setAttachData((pre) => {
+                                        return {
+                                            ...pre,
+                                            video: ""
+                                        }
+                                    })
+
+                                    setLoading(false)
+                                }}
+
+                                className='absolute text-[#cbcbcb] hover:text-[#e7e5e5] z-40 -top-10 -right-8'
+                            />
+                            <video src={attachData.video} className='h-[350px]' controls></video>
+                        </div>
                     </section>
                 )
             }

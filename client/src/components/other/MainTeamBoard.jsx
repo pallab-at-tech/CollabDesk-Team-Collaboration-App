@@ -126,7 +126,7 @@ const MainTeamBoard = () => {
                                     }
                                 </div>
 
-                                <div className='ipad_pro:ml-8 mini_tab:ml-6 ml-4 mt-4 sm:text-base text-sm'>
+                                <div className='ipad_pro:ml-8 mini_tab:ml-6 -ml-1 mt-4 sm:text-base text-sm'>
                                     {
                                         Array.isArray(task?.column) && (
                                             task?.column.map((val, idx) => {

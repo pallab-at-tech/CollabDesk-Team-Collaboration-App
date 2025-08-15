@@ -4,7 +4,6 @@ import { CgProfile } from "react-icons/cg";
 import { RiChatSmile2Line } from "react-icons/ri";
 import { HiOutlineUserAdd } from "react-icons/hi";
 import SearchNewMember from './SearchNewMember';
-import { useGlobalContext } from '../provider/GlobalProvider';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import { setMessageDetails } from '../store/chatSlice';
@@ -29,7 +28,6 @@ const ChatPage = () => {
     const [openSearchForNewMember, setOpenSearchForNewMember] = useState(false)
     const [openGroupCreateWindow, setOpenGroupCreateWindow] = useState(false)
 
-    const { socketConnection } = useGlobalContext()
 
 
     useEffect(() => {
@@ -54,14 +52,14 @@ const ChatPage = () => {
         })();
     }, [])
 
-    console.log("chat_details details", chat_details)
+    console.log("chat_details details", location)
 
     return (
         <section className='min-h-[calc(100vh-60px)] '>
 
-            <div className='grid grid-cols-[28%_1fr]'>
+            <div className='grid ipad_pro:grid-cols-[28%_1fr]'>
 
-                <div className='h-[calc(100vh-60px)] bg-[#21222b] text-[#f4f4f4]  overflow-y-auto scroll-smooth hide-scrollbar border-r border-[#c1c1c17e] ring-1 ring-[#c1c1c17e] relative' style={{ willChange: 'transform' }}>
+                <div className={`h-[calc(100vh-60px)] ${location.pathname !== "/chat" ? "hidden ipad_pro:block" : "block"} bg-[#21222b] text-[#f4f4f4]  overflow-y-auto scroll-smooth hide-scrollbar border-r border-[#c1c1c17e] ring-1 ring-[#c1c1c17e] relative`} style={{ willChange: 'transform' }}>
 
                     <div className='min-h-[65px] flex justify-between items-center px-4 max-h-[65px] bg-[#21222b] shadow-md shadow-[#57575765] sticky top-0 z-10'>
 
@@ -69,10 +67,10 @@ const ChatPage = () => {
                             <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#2e2f38]">
                                 <CgProfile size={24} className="text-gray-300" />
                             </div>
-                            <p className="text-sm font-medium truncate max-w-[15ch]">{`${user?.name}` || "Guest User"}</p>
+                            <p className="text-sm font-medium truncate sm:max-w-[15ch] max-w-[9ch] ipad_pro:hidden block lg-real:block">{`${user?.name}` || "Guest User"}</p>
                         </div>
 
-                        <div className="flex items-center bg-[#2e2f38] rounded-full px-3 py-1.5 w-[140px]">
+                        <div className="flex items-center bg-[#2e2f38] rounded-full px-3 py-1.5 sm:w-[140px] w-[120px]">
                             <input
                                 type="text"
                                 placeholder="Search..."
@@ -105,7 +103,7 @@ const ChatPage = () => {
                                             <Link to={`/chat/${v?._id}`} state={{ allMessageDetails: v }} key={v?._id || `x-${v?.otherUser?._id}`}
                                                 className="rounded-lg bg-[#205b67] hover:bg-[#2e4d66] transition-colors flex gap-3 items-center px-4 py-2.5 cursor-pointer"
                                             >
-                                          
+
                                                 {
                                                     v?.group_type === "GROUP" ? (
                                                         <FaUserGroup
@@ -151,7 +149,7 @@ const ChatPage = () => {
 
                 </div>
 
-                <div className={`h-[calc(100vh-60px)] overflow-y-auto ${location.state === null && "flex items-center justify-center"} narrow-scrollbar bg-[#282932]`} style={{ willChange: 'transform' }}>
+                <div className={`h-[calc(100vh-60px)] w-full overflow-y-auto  ${location.state === null && "items-center justify-center ipad_pro:flex hidden"} narrow-scrollbar bg-[#282932]`} style={{ willChange: 'transform' }}>
 
                     {
                         location.state === null ? (

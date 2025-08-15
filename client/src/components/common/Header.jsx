@@ -5,6 +5,7 @@ import { IoIosNotifications } from "react-icons/io";
 import { useSelector } from 'react-redux';
 import { CgProfile } from "react-icons/cg";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
+import { FaChartBar } from "react-icons/fa6";
 
 
 const Header = () => {
@@ -83,6 +84,12 @@ const Header = () => {
                             <Link to={"/chat"}>
                                 <IoChatbubbleEllipsesSharp size={22} className='text-white'/>
                             </Link>
+
+                            {
+                                user?.roles?.length !== 0 && (
+                                    <FaChartBar className='mini_tab:hidden block'/>
+                                )
+                            }
 
                         </>
                     ) : (
