@@ -26,19 +26,28 @@ const teamRequest = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "team"
     },
-    teamName : {
-        type : String,
-        default : ""
+    teamName: {
+        type: String,
+        default: ""
     },
-    requestedBy_id : {
-        type : mongoose.Schema.ObjectId,
-        ref : "user"
+    requestedBy_id: {
+        type: mongoose.Schema.ObjectId,
+        ref: "user"
     },
-    requestedBy_userId : {
-        type : String,
-        default : ""
+    requestedBy_userId: {
+        type: String,
+        default: ""
     }
 
+})
+
+const notify = new mongoose.Schema({
+    notifyId : {
+        type : mongoose.Schema.ObjectId,
+        ref : "notification"
+    }
+},{
+    timestamps : true
 })
 
 
@@ -60,14 +69,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
-    about : {
+    about: {
         type: String,
         default: ""
-    },
+    }
+    // ,
+    // notification: [
+    //     notify
+    // ]
+    ,
     roles: [
         RoleSchema
     ],
-    request : [
+    request: [
         teamRequest
     ],
     avatar: {
@@ -100,15 +114,15 @@ const userSchema = new mongoose.Schema({
 
 userSchema.index(
     {
-        name : "text",
-        userId : "text",
-        email : "text"
+        name: "text",
+        userId: "text",
+        email: "text"
     },
     {
-        weights : {
-            name : 5,
-            userId : 10,
-            email : 10
+        weights: {
+            name: 5,
+            userId: 10,
+            email: 10
         },
         name: "user_text_search_index"
     },

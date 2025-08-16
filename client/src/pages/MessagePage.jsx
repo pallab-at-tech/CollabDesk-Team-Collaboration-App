@@ -180,6 +180,8 @@ const MessagePage = () => {
         })()
     }, [params?.conversation])
 
+    console.log("chat_details",chat_details)
+
 
     // recieved message and update globally [ all chat member ]
     useEffect(() => {
@@ -205,7 +207,7 @@ const MessagePage = () => {
         return () => {
             socketConnection.off("receive_message");
         };
-    }, [socketConnection]);
+    }, [socketConnection,dispatch]);
 
 
     useEffect(() => {
@@ -227,9 +229,9 @@ const MessagePage = () => {
 
 
     return (
-        <section className='h-[calc(100vh-60px)] w-full grid grid-rows-[65px_1fr_55px] overflow-hidden'>
+        <section className='h-[calc(100vh-60px)] w-full  overflow-hidden relative'>
 
-            <div className='bg-[#21222b] px-4 grid grid-cols-[300px_1fr] w-full items-center text-white shadow-md shadow-[#57575765]'>
+            <div className='bg-[#21222b]  fixed top-0 z-50 pt-[13px] pb-[13px] px-4 grid grid-cols-[300px_1fr] w-full items-center text-white shadow-md shadow-[#57575765]'>
 
                 <div className={`flex gap-2.5 ${location?.allMessageDetails?.group_type === "GROUP" ? "items-center" : "items-start"} pl-2`}>
                     <div className='flex items-center justify-center'>
@@ -256,7 +258,8 @@ const MessagePage = () => {
                 </div>
             </div>
 
-            <div className='h-full overflow-y-auto px-2.5 flex flex-col gap-2.5 py-4 chat-scrollbar relative' style={{ willChange: 'transform' }}>
+
+            <div className='h-full mb-[55px] pt-[140px] overflow-y-scroll px-2.5 flex flex-col gap-2.5 py-4 chat-scrollbar relative' style={{ willChange: 'transform' }}>
                 {
                     Array.isArray(messages) && messages.map((value, index) => {
 
@@ -318,7 +321,7 @@ const MessagePage = () => {
             </div>
 
 
-            <div className='bg-[#1f2029] w-full rounded-t-md grid grid-cols-[100px_1fr_100px] items-center text-white shadow-md shadow-[#154174]'>
+            <div className='bg-[#1f2029] fixed bottom-0 py-3 w-full rounded-t-md grid grid-cols-[100px_1fr_100px] items-center text-white shadow-md shadow-[#154174]'>
 
                 <div className='flex items-center justify-center relative'>
                     <MdAttachment size={29} onClick={() => setOpenAttach(true)} className='cursor-pointer' />
@@ -416,6 +419,7 @@ const MessagePage = () => {
                 }
 
             </div>
+
 
             <div className={`absolute  left-[40%] bottom-0 top-[40%] ${loading ? "block" : "hidden"}`}>
                 <div className='loader'></div>

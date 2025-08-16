@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const notificationSchema = new mongoose.Schema({
     notification_type : {
         type : String,
-        enum : ["task_assign" , "new_message" , "invitation" , "mention"]
+        default : ""
     },
     data : {
         type : String,

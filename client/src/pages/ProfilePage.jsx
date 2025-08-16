@@ -13,6 +13,7 @@ import toast from 'react-hot-toast'
 import ProfileEdit from '../components/other/ProfileEdit';
 import { FaEnvelopeOpenText } from "react-icons/fa";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
+import { useGlobalContext } from '../provider/GlobalProvider';
 
 const ProfilePage = () => {
 
@@ -21,7 +22,7 @@ const ProfilePage = () => {
   const location = useLocation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-
+  const { logoutUser } = useGlobalContext()
 
 
   const [path, setPath] = useState("")
@@ -44,6 +45,8 @@ const ProfilePage = () => {
       if (response?.data?.success) {
         dispatch(setUserLogout())
         localStorage.clear()
+
+        logoutUser();
 
         toast.success(response?.data?.message)
         navigate("/")

@@ -154,6 +154,9 @@ io.on("connection", async (socket) => {
                     conversation: conversationToEmit,
                     message: populateMessage
                 })
+                io.to(pid.toString()).emit("notification",{
+                    message : `you have been joined ${createGroup.group_name} by ${createrUserName}`
+                })
             })
 
         } catch (error) {
@@ -229,4 +232,4 @@ io.on("connection", async (socket) => {
     });
 })
 
-export { app, server }
+export { app, server , io }

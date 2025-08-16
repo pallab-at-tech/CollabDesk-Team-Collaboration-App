@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import sign_in from "../assets/sin1.png"
-import { Link , useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Axios from "../utils/Axios"
 import SummaryApi from '../common/SummaryApi'
 import toast from 'react-hot-toast'
-import {useDispatch , useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setUserDetails } from '../store/userSlice'
 import fetchUserDetails from '../utils/fetchUserDetails'
+import { useGlobalContext } from '../provider/GlobalProvider'
+
 
 
 
@@ -20,10 +22,11 @@ const SigninPage = () => {
 
     const [pointerNone, setPointerNone] = useState(false)
     const dispatch = useDispatch()
+    const { loginUser } = useGlobalContext();
 
     const user = useSelector(state => state.user)
 
-    console.log("user redux",user)
+    console.log("user redux", user)
 
 
     const handleChange = (e) => {
@@ -62,7 +65,7 @@ const SigninPage = () => {
                 localStorage.setItem('refreshToken', response.data.data.refreshToken)
 
 
-                localStorage.setItem('login',"true")
+                loginUser()
 
 
                 const userDetails = await fetchUserDetails()
@@ -79,13 +82,13 @@ const SigninPage = () => {
 
         } catch (error) {
 
-            if(error?.response?.data?.message === "please provide email and password"){
+            if (error?.response?.data?.message === "please provide email and password") {
                 toast.error("please provide email and password")
             }
-            else if(error?.response?.data?.message === "provide email not registered"){
+            else if (error?.response?.data?.message === "provide email not registered") {
                 toast.error("provide email not registered")
             }
-            else if("please enter right password"){
+            else if ("please enter right password") {
                 toast.error("wrong password")
             }
         } finally {

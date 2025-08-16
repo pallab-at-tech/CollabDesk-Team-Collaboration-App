@@ -3,29 +3,19 @@ import Header from './components/common/Header'
 import Footer from './components/common/Footer'
 import { Outlet } from 'react-router-dom'
 import { useGlobalContext } from './provider/GlobalProvider'
-import { useEffect, useState } from 'react'
 
 function App() {
+  const { isLogin } = useGlobalContext()  // 🔹 direct from context
 
-  const { fetchIsLogin } = useGlobalContext()
-  const [isLogin, setIsLogin] = useState(null)
-
-  useEffect(() => {
-    setIsLogin(fetchIsLogin())
-  }, [fetchIsLogin])
-
-  if (isLogin === null) return null
+  if (isLogin === null) return null // optional safeguard on first render
 
   return (
     <>
       <Header />
 
-      {
-        <Outlet />
-      }
+      <Outlet />
 
       {/* <Footer/> */}
-
     </>
   )
 }

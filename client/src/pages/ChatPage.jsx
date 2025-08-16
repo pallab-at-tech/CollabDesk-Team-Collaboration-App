@@ -16,6 +16,8 @@ import { useLocation } from 'react-router-dom';
 import { HiUserGroup } from "react-icons/hi2";
 import CreateGroup from '../components/common/CreateGroup';
 import { FaUserGroup } from "react-icons/fa6";
+import { useGlobalContext } from '../provider/GlobalProvider';
+import { updateConversationWithNewMessage } from '../store/chatSlice';
 
 const ChatPage = () => {
 
@@ -25,9 +27,27 @@ const ChatPage = () => {
 
     const dispatch = useDispatch()
 
+    const { socketConnection } = useGlobalContext()
+
     const [openSearchForNewMember, setOpenSearchForNewMember] = useState(false)
     const [openGroupCreateWindow, setOpenGroupCreateWindow] = useState(false)
 
+    useEffect(() => {
+
+        if (!socketConnection) return
+
+        socketConnection.on("receive_message", (data) => {
+            dispatch(updateConversationWithNewMessage({
+                conversation: data.conversation,
+                message: data.message
+            }));
+        });
+
+        return () => {
+            socketConnection.off("receive_message");
+        };
+       
+    }, [socketConnection , dispatch])
 
 
     useEffect(() => {
@@ -52,7 +72,6 @@ const ChatPage = () => {
         })();
     }, [])
 
-    console.log("chat_details details", location)
 
     return (
         <section className='min-h-[calc(100vh-60px)] '>

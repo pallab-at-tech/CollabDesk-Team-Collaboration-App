@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
+// GlobalProvider.js
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Axios from '../utils/Axios'
 import SummaryApi from '../common/SummaryApi'
@@ -11,63 +12,71 @@ import { io } from 'socket.io-client'
 export const GlobalContext = createContext(null)
 export const useGlobalContext = () => useContext(GlobalContext)
 
-
+// 🔹 exported reference (so Axios can reach setIsLogin)
+export let setLoginGlobal = () => { }
 
 const GlobalProvider = ({ children }) => {
-
     const user = useSelector(state => state.user)
     const dispatch = useDispatch()
     const [socketConnection, setSocketConnection] = useState(null)
+    const [isLogin, setIsLogin] = useState(false)
 
+    // 🔹 register setter globally
+    useEffect(() => {
+        setLoginGlobal = setIsLogin
+    }, [setIsLogin])
 
     const fetchUserAllDetails = async () => {
         try {
-
             const response = await Axios({
                 ...SummaryApi?.user_deatails
             })
-
             const { data: responseData } = response
 
             if (responseData?.success) {
                 dispatch(setUserDetails(responseData?.data))
-                localStorage.setItem('login', 'true');
+                localStorage.setItem('login', 'true')
+                setIsLogin(true)
+            } else {
+                localStorage.setItem('login', 'false')
+                setIsLogin(false)
             }
-            else {
-                localStorage.setItem('login', 'false');
-            }
-
         } catch (error) {
-            localStorage.setItem('login', 'false');
+            localStorage.setItem('login', 'false')
+            setIsLogin(false)
             console.log("error from global provider", error)
         }
     }
 
-    const fetchIsLogin = () => {
+    useEffect(() => {
         const login = localStorage.getItem("login")
-        return login === "true"
-    }
+        setIsLogin(login === "true")
+    }, [])
+
+    useEffect(() => {
+        localStorage.setItem("login", isLogin)
+    }, [isLogin])
+
+    const loginUser = () => {
+        localStorage.setItem("login", "true");
+        setIsLogin(true);
+    };
+
+    const logoutUser = () => {
+        localStorage.removeItem("login");
+        setIsLogin(false);
+    };
 
     const fetchTeamDetails = async (teamId) => {
-
         try {
             const response = await Axios({
                 ...SummaryApi.team_details,
-                params: {
-                    teamId,
-                }
+                params: { teamId }
             })
-
             const { data: responseData } = response
 
-            if (responseData?.error) {
-                toast.error(responseData?.message)
-            }
-
-            if (responseData?.success) {
-                dispatch(setTeamDetails(responseData?.data))
-            }
-
+            if (responseData?.error) toast.error(responseData?.message)
+            if (responseData?.success) dispatch(setTeamDetails(responseData?.data))
         } catch (error) {
             console.log("error for fetchTeamDetails", error)
         }
@@ -75,77 +84,54 @@ const GlobalProvider = ({ children }) => {
 
     const fetchTaskDetails = async (teamId) => {
         try {
-
             const response = await Axios({
                 ...SummaryApi.task_details,
-                params: {
-                    teamId: teamId
-                }
+                params: { teamId }
             })
-
             const { data: responseData } = response
 
-            if (responseData?.error) {
-                toast.error(responseData?.message)
-            }
-
-            if (responseData?.success) {
-                dispatch(setTask(responseData?.data))
-            }
-
+            if (responseData?.error) toast.error(responseData?.message)
+            if (responseData?.success) dispatch(setTask(responseData?.data))
         } catch (error) {
             console.log("error occur for fetchTaskDetails", error)
         }
     }
 
     useEffect(() => {
-        fetchUserAllDetails();
-    }, []);
+        fetchUserAllDetails()
+    }, [])
 
+    // socket configure
     useEffect(() => {
-        fetchIsLogin()
-    }, [fetchUserAllDetails])
-
-
-    // socket configure in client site
-    useEffect(() => {
-
         if (user?._id) {
-
-            console.log("testing user id ", user?._id)
-
-            const socket = io(import.meta.env.VITE_BACKEND_URL, {
-                withCredentials: true
-            });
-
+            const socket = io(import.meta.env.VITE_BACKEND_URL, { withCredentials: true })
             setSocketConnection(socket)
-
-            socket.emit("join_room", user._id);
+            socket.emit("join_room", user._id)
 
             socket.on("online_user", (onlineUsers) => {
-                dispatch(onlineUserDetails({ onlineUser: onlineUsers }));
-            });
+                dispatch(onlineUserDetails({ onlineUser: onlineUsers }))
+            })
 
-            // Cleanup on unmount
             return () => {
-                socket.off("connect");
-                socket.off("online_user");
-                socket.disconnect();
-            };
+                socket.off("connect")
+                socket.off("online_user")
+                socket.disconnect()
+            }
         }
-        else{
-            return;
-        }
-
-    }, [user?._id , dispatch])
-
-    console.log("user from global provider", user)
+    }, [user?._id, dispatch])
 
     return (
-        <GlobalContext.Provider value={{ fetchUserAllDetails, fetchIsLogin, fetchTeamDetails, fetchTaskDetails , socketConnection  }}>
-            {
-                children
-            }
+        <GlobalContext.Provider value={{
+            fetchUserAllDetails,
+            fetchTeamDetails,
+            fetchTaskDetails,
+            socketConnection,
+            isLogin,
+            setIsLogin,
+            loginUser,
+            logoutUser
+        }}>
+            {children}
         </GlobalContext.Provider>
     )
 }
