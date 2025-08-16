@@ -54,12 +54,13 @@ const router = createBrowserRouter([
                 path : "/profile/:user",
                 element : <ProfilePage/>,
                 children : [
+                    // {
+                    //     path : '',
+                    //     element : <Timeline/>
+                    // },
+                    // /profile/:user/request
                     {
-                        path : '',
-                        element : <Timeline/>
-                    },
-                    {
-                        path : "/profile/:user/request",
+                        path : "",
                         element : <ProfileTeamRequest/>
                     },
                     {

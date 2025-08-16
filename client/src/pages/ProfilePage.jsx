@@ -166,14 +166,16 @@ const ProfilePage = () => {
 
             <div className='pt-[35px] flex items-center gap-x-10 pb-[10px] '>
 
-              <NavLink to={`/profile/${params?.user}`} className={({ isActive }) => `flex items-center transition-colors duration-75 ease-in-out gap-x-1 cursor-pointer relative px-2 py-0.5 ${path !== "request" && "bg-green-600  rounded"}`}>
+              {/* <NavLink to={`/profile/${params?.user}`} className={({ isActive }) => `flex items-center transition-colors duration-75 ease-in-out gap-x-1 cursor-pointer relative px-2 py-0.5 ${path !== "request" && "bg-green-600  rounded"}`}>
 
                 <FaEye size={20} />
                 <p>Timeline</p>
 
-              </NavLink>
+              </NavLink> */}
 
-              <NavLink to={`/profile/${params?.user}/request`}
+              {/* /profile/${params?.user}/request */}
+
+              <NavLink to={`/profile/${params?.user}`}
                 className={({ isActive }) => `flex items-center transition-colors duration-75 ease-in-out gap-x-1 cursor-pointer relative px-2 py-0.5 ${path === "request" && "bg-green-600  rounded"}`}
               >
                 <FaEnvelopeOpenText />

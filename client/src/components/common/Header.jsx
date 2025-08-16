@@ -6,21 +6,22 @@ import { useSelector } from 'react-redux'
 import { CgProfile } from "react-icons/cg"
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5"
 import { FaChartBar } from "react-icons/fa6"
+import logo1 from "../../assets/logo1.png"
 
 const Header = () => {
-  const { isLogin } = useGlobalContext()   // direct from context
+  const { isLogin } = useGlobalContext()   
   const user = useSelector(state => state.user)
 
   const boardURL = `/board/${user?.name}-${user?._id}/${user?.roles[0]?.teamId}`
   const mobileBoardURL = `/board/${user?.name}-${user?._id}`
   const profileURL = `/profile/${user?.name}`
 
-  if (isLogin === null) return null  // optional safeguard
+  if (isLogin === null) return null  
 
   return (
     <header className={`${isLogin ? "bg-A-off-color" : "bg-[var(--primary-color)]"} min-h-[60px] grid mini_tab:grid-cols-[1fr_2fr_2fr] grid-cols-2 items-center z-50 sticky top-0 `}>
-      <Link to={"/"} className={`${isLogin ? "text-white" : ""}`}>
-        logo
+      <Link to={"/"} className={`${isLogin ? "text-white" : ""} sm:pl-6`}>
+        <img src={logo1} alt="" className='h-[54px]'/>
       </Link>
 
       <div className={`items-center justify-center md:gap-[20%] gap-8 ${isLogin ? "text-A-off-text" : ""} font-semibold mini_tab:flex hidden`}>
@@ -31,9 +32,9 @@ const Header = () => {
       <div className='flex items-center justify-center mini_tab:gap-10 gap-7'>
         {isLogin ? (
           <>
-            <div className='text-A-off-text font-semibold cursor-pointer'>
+            {/* <div className='text-A-off-text font-semibold cursor-pointer'>
               <IoIosNotifications size={24} />
-            </div>
+            </div> */}
 
             {user.avatar ? (
               <div>IMG</div>

@@ -10,9 +10,9 @@ import { Outlet } from 'react-router-dom';
 const RealHome = () => {
 
     const [openCreateTeam, setOpenCreateTeam] = useState(false)
-
+// lg-real:grid-cols-[1fr_1fr]
     return (
-        <section className='bg-gradient-to-b from-[#1b1c29] to-[#21222b] min-h-[calc(100vh-60px)]  grid lg-real:grid-cols-[1fr_1fr] place-items-center'>
+        <section className='bg-gradient-to-b from-[#1b1c29] to-[#21222b] min-h-[calc(100vh-60px)]  grid  place-items-center'>
 
             <div className='flex flex-col gap-2  text-A-off-color text-3xl font-semibold'>
 
@@ -21,10 +21,10 @@ const RealHome = () => {
                     <MdOutlineCreateNewFolder size={38} />
                 </div>
 
-                <Link className='flex gap-1 items-center bg-[#116c20] text-white rounded w-[250px] px-3 py-4 hover:bg-[#0f621d] transition-colors duration-150'>
+                {/* <Link className='flex gap-1 items-center bg-[#116c20] text-white rounded w-[250px] px-3 py-4 hover:bg-[#0f621d] transition-colors duration-150'>
                     <div className=' w-full block px-2 py-1'>join team</div>
                     <MdOutlinePostAdd size={38} />
-                </Link>
+                </Link> */}
 
                 <Link className='w-[250px] text-[#a9abaa] pt-2 text-base underline leading-[19px]'>
                     know more about our service
@@ -33,7 +33,7 @@ const RealHome = () => {
             </div>
 
 
-            <div className='bg-[#282932]  text-B-color text-lg font-semibold w-full h-full  lg-real:block hidden'>
+            {/* <div className='bg-[#282932]  text-B-color text-lg font-semibold w-full h-full  lg-real:block hidden'>
 
                 <div className='float-right p-4 cursor-pointer' title='full screen'>
                     <MdFullscreen size={28}/>
@@ -47,7 +47,7 @@ const RealHome = () => {
                     </div>
                 </div>
 
-            </div>
+            </div> */}
 
 
             {
