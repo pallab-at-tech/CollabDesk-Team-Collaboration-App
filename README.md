@@ -4,6 +4,10 @@
 
 ---
 
+## live deploy link
+
+-[collabBoard](https://collab-desk-team-collaboration-app.vercel.app)
+
 ## 🚀 Features
 
 - 🔐 User authentication using JWT
@@ -33,5 +37,6 @@
 ## 👨‍💻 Contributor
 
 - [pallab-at-tech](https://github.com/pallab-at-tech)
+
 
 
